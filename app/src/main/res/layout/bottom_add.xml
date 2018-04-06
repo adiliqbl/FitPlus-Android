@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="100dp"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin">
+
+    <TextView
+        android:id="@+id/label"
+        style="@style/Text.Large.Bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_normal"
+        android:text="Add Goal"
+        android:textColor="@color/textColorDefaultDark"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@id/topBackground" />
+
+    <EditText
+        android:id="@+id/add_goal"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:inputType="number"
+        android:digits="0123456789"
+        app:layout_constraintTop_toBottomOf="@id/label"
+        tools:ignore="LabelFor" />
+
+    <TextView
+        android:id="@+id/goal_name"
+        style="@style/Text.Small.Bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Calorie"
+        android:textColor="@color/colorAccent"
+        app:layout_constraintLeft_toLeftOf="@id/label"
+        app:layout_constraintTop_toBottomOf="@id/add_goal" />
+
+    <TextView
+        android:id="@+id/add_button"
+        style="@style/Text.Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ADD"
+        android:textColor="@color/colorAccent"
+        app:layout_constraintBottom_toBottomOf="@id/label"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/label" />
+</android.support.constraint.ConstraintLayout>

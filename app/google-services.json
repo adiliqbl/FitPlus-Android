@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "677551680814",
+    "firebase_url": "https://fitplus-course.firebaseio.com",
+    "project_id": "fitplus-course",
+    "storage_bucket": "fitplus-course.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:677551680814:android:a5c8cf031c159305",
+        "android_client_info": {
+          "package_name": "app.fitplus.health"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "677551680814-oac7l37iqj4nm1h5ciokg6q60go0n0a2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8C3719i15AsqfyaqEaBd2i8s70aNk-ds"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

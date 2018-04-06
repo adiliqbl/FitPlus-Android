@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:custom="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:overScrollMode="ifContentScrolls"
+    android:scrollbars="none">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+        <View
+            android:id="@+id/topBackground"
+            android:layout_width="match_parent"
+            android:layout_height="280dp"
+            android:background="@color/colorBody" />
+
+        <com.github.lzyzsd.circleprogress.CircleProgress
+            android:id="@+id/circle_progress"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            app:circle_finished_color="@color/colorAccent"
+            app:circle_text_color="@color/transparent"
+            app:layout_constraintBottom_toBottomOf="@id/topBackground"
+            app:layout_constraintLeft_toLeftOf="@id/topBackground"
+            app:layout_constraintRight_toRightOf="@id/topBackground"
+            app:layout_constraintTop_toTopOf="@id/topBackground"
+            custom:circle_progress="20" />
+
+        <TextView
+            style="@style/Text.Large.Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/padding_normal"
+            android:text="Progress"
+            android:textColor="@color/textColorDefaultDark"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="@id/topBackground" />
+
+        <TextView
+            android:id="@+id/today_heading"
+            style="@style/Text.Large.Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/padding_normal"
+            android:text="Today"
+            android:textColor="@color/textColorDefaultDark"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/topBackground" />
+
+        <Button
+            android:id="@+id/goals_button"
+            style="@style/Base.Widget.AppCompat.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="GOALS"
+            android:textAppearance="@style/Text.Regular.Bold"
+            android:textColor="@color/colorAccent"
+            app:layout_constraintBottom_toBottomOf="@id/today_heading"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/today_heading"
+            custom:ignore="MissingPrefix" />
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/calorie"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button_large_height"
+            android:layout_marginTop="@dimen/padding_medium"
+            android:background="@color/white"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:padding="@dimen/padding_medium"
+            app:layout_constraintTop_toBottomOf="@id/today_heading">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/calorie_icon"
+                android:layout_width="@dimen/icon_small"
+                android:layout_height="@dimen/icon_small"
+                android:src="@color/red"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_fire"
+                android:tint="@color/white"
+                app:layout_constraintBottom_toBottomOf="@id/calorie_icon"
+                app:layout_constraintLeft_toLeftOf="@id/calorie_icon"
+                app:layout_constraintRight_toRightOf="@id/calorie_icon"
+                app:layout_constraintTop_toTopOf="@id/calorie_icon"
+                custom:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/calorie_text"
+                style="@style/Text.Regular.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/padding_medium"
+                android:text="Calories burnt"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/calorie_icon"
+                app:layout_constraintTop_toTopOf="parent" />
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/steps"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button_large_height"
+            android:background="@color/white"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:padding="@dimen/padding_medium"
+            app:layout_constraintTop_toBottomOf="@id/calorie">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/steps_icon"
+                android:layout_width="@dimen/icon_small"
+                android:layout_height="@dimen/icon_small"
+                android:src="@color/colorAccentLight"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_shoe"
+                android:tint="@color/white"
+                app:layout_constraintBottom_toBottomOf="@id/steps_icon"
+                app:layout_constraintLeft_toLeftOf="@id/steps_icon"
+                app:layout_constraintRight_toRightOf="@id/steps_icon"
+                app:layout_constraintTop_toTopOf="@id/steps_icon"
+                custom:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/steps_text"
+                style="@style/Text.Regular.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/padding_medium"
+                android:text="142 steps covered"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/steps_icon"
+                app:layout_constraintTop_toTopOf="parent" />
+        </android.support.constraint.ConstraintLayout>
+
+        <Button
+            android:id="@+id/start_activity"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/padding_small"
+            android:backgroundTint="@color/colorAccent"
+            android:elevation="15dp"
+            android:stateListAnimator="@null"
+            android:text="Start Activity"
+            android:textColor="@color/white"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/steps"
+            custom:layout_editor_absoluteX="16dp" />
+    </android.support.constraint.ConstraintLayout>
+</ScrollView>

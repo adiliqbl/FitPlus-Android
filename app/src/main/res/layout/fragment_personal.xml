@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/profile_image"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:src="@drawable/ic_avatar_svgrepo_com"
+            app:layout_constraintLeft_toLeftOf="parent" />
+
+        <TextView
+            android:id="@+id/name"
+            style="@style/Text.Regular.Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/padding_normal"
+            android:text="Asad Mahmood"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toTopOf="@id/email"
+            app:layout_constraintLeft_toRightOf="@id/profile_image"
+            app:layout_constraintTop_toTopOf="@id/profile_image"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <TextView
+            android:id="@+id/email"
+            style="@style/Text.Small.Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/padding_normal"
+            android:text="email@gmail.com"
+            app:layout_constraintBottom_toBottomOf="@id/profile_image"
+            app:layout_constraintLeft_toRightOf="@id/profile_image"
+            app:layout_constraintTop_toBottomOf="@id/name"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <ImageButton
+            android:id="@+id/edit_button"
+            style="@style/Base.Widget.AppCompat.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_edit_black_24dp"
+            android:tint="@color/textColorDefault"
+            app:layout_constraintRight_toRightOf="parent"
+            tools:ignore="ContentDescription" />
+
+        <View
+            android:id="@+id/div1"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/divider_height"
+            android:layout_marginTop="@dimen/padding_normal"
+            android:background="@color/dividerColor"
+            app:layout_constraintTop_toBottomOf="@id/profile_image" />
+
+        <TextView
+            android:id="@+id/goals_heading"
+            style="@style/Text.Large.Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/padding_normal"
+            android:text="Goals"
+            android:textColor="@color/textColorDefaultDark"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/div1" />
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/goals_container"
+            android:layout_width="match_parent"
+            android:layout_height="195dp"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/padding_medium"
+            android:background="@color/green"
+            android:paddingTop="@dimen/padding_small"
+            app:layout_constraintTop_toBottomOf="@id/goals_heading">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/padding_small"
+                android:src="@drawable/ic_flag_black_24dp"
+                android:tint="@color/white"
+                app:layout_constraintRight_toRightOf="parent"
+                tools:ignore="ContentDescription" />
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="90dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/cal_icon_container"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:src="@color/translucent"
+                    app:layout_constraintBottom_toTopOf="@id/calorie_burned"
+                    app:layout_constraintLeft_toLeftOf="@id/calorie_burned"
+                    app:layout_constraintLeft_toRightOf="@id/steps_icon"
+                    app:layout_constraintRight_toRightOf="@id/calorie_burned"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_chainStyle="packed" />
+
+                <ImageView
+                    android:id="@+id/cal_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="@color/colorAccent"
+                    android:src="@drawable/ic_fire"
+                    android:tint="@color/white"
+                    app:layout_constraintBottom_toBottomOf="@id/cal_icon_container"
+                    app:layout_constraintLeft_toLeftOf="@id/cal_icon_container"
+                    app:layout_constraintRight_toRightOf="@id/cal_icon_container"
+                    app:layout_constraintTop_toTopOf="@id/cal_icon_container"
+                    tools:ignore="ContentDescription" />
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/steps_icon_container"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
+                    android:layout_marginBottom="@dimen/padding_small"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:src="@color/translucent"
+                    app:layout_constraintBottom_toTopOf="@id/total_steps"
+                    app:layout_constraintLeft_toLeftOf="@id/total_steps"
+                    app:layout_constraintRight_toRightOf="@id/total_steps"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_chainStyle="packed" />
+
+                <ImageView
+                    android:id="@+id/steps_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_shoe"
+                    android:tint="@color/white"
+                    app:layout_constraintBottom_toBottomOf="@id/steps_icon_container"
+                    app:layout_constraintLeft_toLeftOf="@id/steps_icon_container"
+                    app:layout_constraintRight_toRightOf="@id/steps_icon_container"
+                    app:layout_constraintTop_toTopOf="@id/steps_icon_container"
+                    app:layout_constraintVertical_chainStyle="packed"
+                    tools:ignore="ContentDescription" />
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/distance_icon_container"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
+                    android:layout_marginBottom="@dimen/padding_small"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:src="@color/translucent"
+                    app:layout_constraintBottom_toTopOf="@id/distance_covered"
+                    app:layout_constraintLeft_toLeftOf="@id/distance_covered"
+                    app:layout_constraintRight_toRightOf="@id/distance_covered"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_chainStyle="packed" />
+
+                <ImageView
+                    android:id="@+id/distance_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_distance"
+                    android:tint="@color/white"
+                    app:layout_constraintBottom_toBottomOf="@id/distance_icon_container"
+                    app:layout_constraintLeft_toLeftOf="@id/distance_icon_container"
+                    app:layout_constraintRight_toRightOf="@id/distance_icon_container"
+                    app:layout_constraintTop_toTopOf="@id/distance_icon_container"
+                    app:layout_constraintVertical_chainStyle="packed"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    android:id="@+id/calorie_burned"
+                    style="@style/Text.Small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/padding_small"
+                    android:gravity="center"
+                    android:text="Add Calorie \n Goal"
+                    android:textColor="@color/white"
+                    app:layout_constraintBottom_toTopOf="@id/start_activity"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toLeftOf="@id/total_steps"
+                    app:layout_constraintTop_toBottomOf="@id/cal_icon_container" />
+
+                <TextView
+                    android:id="@+id/total_steps"
+                    style="@style/Text.Small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/padding_small"
+                    android:gravity="center"
+                    android:text="Add Steps \n Goal"
+                    android:textColor="@color/white"
+                    app:layout_constraintLeft_toRightOf="@id/calorie_burned"
+                    app:layout_constraintRight_toLeftOf="@id/distance_covered"
+                    app:layout_constraintTop_toBottomOf="@id/steps_icon_container" />
+
+                <TextView
+                    android:id="@+id/distance_covered"
+                    style="@style/Text.Small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/padding_small"
+                    android:gravity="center"
+                    android:text="Add Distance \n Goal"
+                    android:textColor="@color/white"
+                    app:layout_constraintBottom_toTopOf="@id/start_activity"
+                    app:layout_constraintLeft_toRightOf="@id/total_steps"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/distance_icon_container" />
+            </android.support.constraint.ConstraintLayout>
+        </android.support.constraint.ConstraintLayout>
+
+        <View
+            android:id="@+id/div2"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/divider_height"
+            android:layout_marginTop="@dimen/padding_normal"
+            android:background="@color/dividerColor"
+            app:layout_constraintTop_toBottomOf="@id/goals_container" />
+
+        <TextView
+            android:id="@+id/preferences_heading"
+            style="@style/Text.Large.Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/padding_normal"
+            android:text="Health Settings"
+            android:textColor="@color/textColorDefaultDark"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/div2" />
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/weight_container"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button_large_height"
+            android:layout_marginTop="@dimen/padding_medium"
+            android:background="@color/white"
+            android:padding="@dimen/padding_medium"
+            app:layout_constraintTop_toBottomOf="@id/preferences_heading">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/icon"
+                android:layout_width="@dimen/icon_small"
+                android:layout_height="@dimen/icon_small"
+                android:src="@color/colorAccent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_weight_kilogram"
+                android:tint="@color/white"
+                app:layout_constraintBottom_toBottomOf="@id/icon"
+                app:layout_constraintLeft_toLeftOf="@id/icon"
+                app:layout_constraintRight_toRightOf="@id/icon"
+                app:layout_constraintTop_toTopOf="@id/icon"
+                tools:ignore="ContentDescription" />
+
+            <EditText
+                android:id="@+id/weight"
+                style="@style/Text.Regular.Small"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/padding_medium"
+                android:digits="0123456789"
+                android:inputType="number"
+                android:text="0"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/icon"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="LabelFor" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="kg weight"
+                app:layout_constraintBottom_toBottomOf="@id/weight"
+                app:layout_constraintLeft_toRightOf="@id/weight"
+                app:layout_constraintTop_toTopOf="@id/weight" />
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/activity_time_container"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button_large_height"
+            android:background="@color/white"
+            android:padding="@dimen/padding_medium"
+            app:layout_constraintTop_toBottomOf="@id/weight_container">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/activity_icon"
+                android:layout_width="@dimen/icon_small"
+                android:layout_height="@dimen/icon_small"
+                android:src="@color/colorAccent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_directions_run_black_24dp"
+                android:tint="@color/white"
+                app:layout_constraintBottom_toBottomOf="@id/activity_icon"
+                app:layout_constraintLeft_toLeftOf="@id/activity_icon"
+                app:layout_constraintRight_toRightOf="@id/activity_icon"
+                app:layout_constraintTop_toTopOf="@id/activity_icon"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/session_length"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/padding_medium"
+                android:text="20 minutes session length"
+                app:layout_constraintBottom_toBottomOf="@id/activity_icon"
+                app:layout_constraintLeft_toRightOf="@id/activity_icon"
+                app:layout_constraintTop_toTopOf="@id/activity_icon" />
+        </android.support.constraint.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/logout"
+            style="@style/Base.Widget.AppCompat.Button.Borderless"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button_large_height"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:gravity="center_vertical|left"
+            android:padding="@dimen/padding_medium"
+            android:text="Logout"
+            android:textAppearance="@style/Text.Regular"
+            android:textColor="@color/textColorDefault"
+            app:layout_constraintTop_toBottomOf="@id/activity_time_container" />
+    </android.support.constraint.ConstraintLayout>
+</ScrollView>

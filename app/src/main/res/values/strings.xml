@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Jolt Plus</string>
+    <string name="title_home">Home</string>
+    <string name="title_explore">Explore</string>
+    <string name="title_assistant">Assistant</string>
+    <string name="title_personal">Personal</string>
+    <string name="title_activity_main">MainActivity</string>
+
+    <!--Errors-->
+    <string name="error_no_internet">No internet connection</string>
+    <string name="error_unknown">Unknown error occurred</string>
+    <string name="error_time_out">Connection timed out</string>
+    <string name="title_activity_maps">Tracking</string>
+
+    <!--Messages-->
+</resources>
