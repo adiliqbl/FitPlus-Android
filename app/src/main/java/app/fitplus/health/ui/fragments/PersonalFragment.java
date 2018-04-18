@@ -13,15 +13,13 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.firebase.ui.auth.AuthUI;
-
 import app.fitplus.health.R;
 import app.fitplus.health.data.DataManager;
 import app.fitplus.health.data.model.Goals;
 import app.fitplus.health.data.model.Health;
+import app.fitplus.health.system.Application;
 import app.fitplus.health.system.ClearMemory;
 import app.fitplus.health.system.component.CustomToast;
-import app.fitplus.health.ui.AppLaunch;
 import app.fitplus.health.ui.user.UpdateUserActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -171,15 +169,6 @@ public class PersonalFragment extends Fragment implements ClearMemory {
 
     @OnClick(R.id.logout)
     public void logout() {
-        DataManager.deleteDB(getActivity());
-
-        assert getActivity() != null;
-        AuthUI.getInstance()
-                .signOut(getActivity())
-                .addOnCompleteListener(task -> {
-                    startActivity(new Intent(getActivity(), AppLaunch.class));
-                    assert getActivity() != null;
-                    getActivity().finish();
-                });
+        Application.getInstance().Logout(getActivity());
     }
 }

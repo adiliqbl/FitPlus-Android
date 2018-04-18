@@ -32,6 +32,9 @@ public class UpdateUserActivity extends RxAppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.update_settings);
         ButterKnife.bind(this);
+
+        setSupportActionBar(findViewById(R.id.toolbar));
+        if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override

@@ -17,8 +17,7 @@
     </style>
 
     <style name="SplashTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!--<item name="android:windowBackground">@drawable/splash</item>-->
-        <item name="android:windowBackground">@color/black</item>
+        <item name="android:windowBackground">@drawable/splash</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:windowActivityTransitions">true</item>
         <item name="android:windowTranslucentStatus">true</item>

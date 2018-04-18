@@ -1,17 +1,22 @@
 package app.fitplus.health.system;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.support.annotation.NonNull;
 
 import com.crashlytics.android.Crashlytics;
+import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import org.jetbrains.annotations.Contract;
 
 import app.fitplus.health.R;
+import app.fitplus.health.data.DataManager;
 import app.fitplus.health.system.receiver.ConnectionReceiver;
+import app.fitplus.health.ui.AppLaunch;
 import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
@@ -68,5 +73,16 @@ public class Application extends android.app.Application {
     public static FirebaseUser getUser() {
         if (user == null) user = FirebaseAuth.getInstance().getCurrentUser();
         return user;
+    }
+
+    public void Logout(Activity activity) {
+        DataManager.deleteDB(activity);
+
+        AuthUI.getInstance()
+                .signOut(activity)
+                .addOnCompleteListener(task -> {
+                    startActivity(new Intent(activity, AppLaunch.class));
+                    activity.finish();
+                });
     }
 }

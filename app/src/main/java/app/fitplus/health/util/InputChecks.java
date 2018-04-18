@@ -59,4 +59,25 @@ public class InputChecks {
             container.setError(null);
         }
     }
+
+    /**
+     * VALIDATE NAME
+     */
+    @Contract("null -> false")
+    public static boolean ValidateName(String name) {
+        return name != null && name.length() >= 3;
+    }
+
+    public static void ShowNameErrors(final String input, final TextInputLayout container) {
+        if (input.equalsIgnoreCase("")) {
+            container.setErrorEnabled(true);
+            container.setError("You can't leave this empty");
+        } else if (!ValidateName(input)) {
+            container.setErrorEnabled(true);
+            container.setError("Name must be 3 characters long");
+        } else {
+            container.setErrorEnabled(false);
+            container.setError(null);
+        }
+    }
 }

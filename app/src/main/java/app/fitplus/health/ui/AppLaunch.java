@@ -17,6 +17,7 @@ import java.util.Arrays;
 
 import app.fitplus.health.R;
 import app.fitplus.health.system.Application;
+import app.fitplus.health.ui.user.CompleteRegistration;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import timber.log.Timber;
@@ -49,10 +50,17 @@ public class AppLaunch extends AppCompatActivity {
 
             if (resultCode == RESULT_OK) {
 
-                // TODO : load other data from firebase
+                // TODO : fetch health data here also
 
                 Application.user = FirebaseAuth.getInstance().getCurrentUser();
-                launchApp();
+
+                if (Application.user.getDisplayName() == null || "".equals(Application.user.getDisplayName())) {
+                    startActivity(new Intent(this, CompleteRegistration.class));
+                    finish();
+                } else {
+                    startActivity(new Intent(AppLaunch.this, MainActivity.class));
+                    finish();
+                }
             } else {
                 if (response != null && response.getError() != null) {
                     Timber.e(response.getError());
@@ -70,11 +78,6 @@ public class AppLaunch extends AppCompatActivity {
                 break;
             }
         }
-    }
-
-    private void launchApp() {
-        startActivity(new Intent(AppLaunch.this, MainActivity.class));
-        finish();
     }
 
     @OnClick(R.id.login_app)

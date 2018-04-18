@@ -14,6 +14,9 @@
     <string name="sign_in">Sign in</string>
     <string name="fitplus_assistant">FitPlus Assistant</string>
     <string name="fitplus">FitPlus</string>
+    <string name="complete_registration">Complete Registration</string>
+    <string name="logout">Logout</string>
+    <string name="first_and_last_name">First and last name</string>
 
     <!--Messages-->
 </resources>
