@@ -1,5 +1,10 @@
 <resources>
 
+    <style name="logo">
+        <item name="android:fontFamily">sans-serif-smallcaps</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
     <style name="Text" parent="android:TextAppearance" />
 
     <style name="Text.Title" parent="android:TextAppearance.DeviceDefault.Widget.ActionBar.Title" />

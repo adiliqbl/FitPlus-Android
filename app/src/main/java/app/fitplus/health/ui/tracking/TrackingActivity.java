@@ -47,12 +47,12 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.concurrent.TimeUnit;
 
 import app.fitplus.health.data.DataManager;
-import app.fitplus.health.data.Progress;
+import app.fitplus.health.data.model.Stats;
 import app.fitplus.health.Pedometer.CaloryCalculator;
 import app.fitplus.health.R;
 import app.fitplus.health.system.ClearMemory;
 import app.fitplus.health.system.events.PedometerEvent;
-import app.fitplus.health.system.PedoMeterService;
+import app.fitplus.health.system.service.PedoMeterService;
 import app.fitplus.health.util.AnimUtil;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -205,11 +205,10 @@ public class TrackingActivity extends FragmentActivity implements OnMapReadyCall
     };
 
     private LocationRequest createLocationRequest() {
-        LocationRequest locationRequest = new LocationRequest();
-        locationRequest.setInterval(500);
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setSmallestDisplacement(10); //10 meters
-        return locationRequest;
+        return LocationRequest.create()
+                .setInterval(500)
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                .setSmallestDisplacement(10);
     }
 
     void animateMapCamera(final LatLng latLng) {
@@ -425,11 +424,11 @@ public class TrackingActivity extends FragmentActivity implements OnMapReadyCall
     }
 
     private void saveTrackData() {
-        Progress progress = DataManager.getProgress(this);
-        if (progress == null) progress = new Progress();
-        progress.calorie += ((Double) calorieBurnCount).intValue();
-        progress.steps += stepCount;
-        DataManager.saveProgress(this, progress);
+        Stats stats = DataManager.getProgress(this);
+        if (stats == null) stats = new Stats();
+        stats.setCalorieBurned(stats.getCalorieBurned() + ((Double) calorieBurnCount).intValue());
+        stats.setSteps(stats.getSteps() + stepCount);
+        DataManager.saveProgress(this, stats);
     }
 
     boolean isMyServiceRunning(Class<?> serviceClass) {

@@ -3,6 +3,7 @@ package app.fitplus.health.ui.fragments;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -12,9 +13,12 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import app.fitplus.health.data.DataManager;
-import app.fitplus.health.data.Goals;
+import com.firebase.ui.auth.AuthUI;
+
 import app.fitplus.health.R;
+import app.fitplus.health.data.DataManager;
+import app.fitplus.health.data.model.Goals;
+import app.fitplus.health.data.model.Health;
 import app.fitplus.health.system.ClearMemory;
 import app.fitplus.health.system.component.CustomToast;
 import app.fitplus.health.ui.AppLaunch;
@@ -26,7 +30,7 @@ import butterknife.OnTextChanged;
 import butterknife.Unbinder;
 
 import static android.app.Activity.RESULT_OK;
-import static app.fitplus.health.system.Application.user;
+import static app.fitplus.health.system.Application.getUser;
 
 public class PersonalFragment extends Fragment implements ClearMemory {
 
@@ -46,17 +50,18 @@ public class PersonalFragment extends Fragment implements ClearMemory {
     private Unbinder unbinder;
 
     private Goals goals = null;
+    private Health health = null;
 
+    @NonNull
     public static PersonalFragment newInstance() {
-        PersonalFragment fragment = new PersonalFragment();
-        return fragment;
+        return new PersonalFragment();
     }
 
     public PersonalFragment() {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_personal, container, false);
@@ -67,25 +72,28 @@ public class PersonalFragment extends Fragment implements ClearMemory {
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         goals = DataManager.getGoals(getActivity());
 
-        name.setText(user.name);
-        email.setText(user.email);
+        name.setText(getUser().getDisplayName());
+
+        if ("".equals(getUser().getEmail())) {
+            email.setText(getUser().getPhoneNumber());
+        } else email.setText(getUser().getEmail());
 
         if (goals == null) goals = new Goals();
-        if (goals.calorie != 0) {
-            calorieGoal.setText(String.valueOf(goals.calorie) + " calorie");
+        if (goals.getCalorie() != 0) {
+            calorieGoal.setText(String.valueOf(goals.getCalorie()) + " calorieBurned");
         }
 
-        if (goals.distance != 0) {
-            distanceGoal.setText(String.valueOf(goals.distance) + " km");
+        if (goals.getDistance() != 0) {
+            distanceGoal.setText(String.valueOf(goals.getDistance()) + " km");
         }
 
-        if (goals.steps != 0) {
-            stepGoal.setText(String.valueOf(goals.steps) + " steps");
+        if (goals.getSteps() != 0) {
+            stepGoal.setText(String.valueOf(goals.getSteps()) + " steps");
         }
     }
 
@@ -117,10 +125,10 @@ public class PersonalFragment extends Fragment implements ClearMemory {
     @OnClick(R.id.cal_icon_container)
     public void setCalorieGoal() {
         @SuppressLint("SetTextI18n") AddGoalFragment addGoalFragment = AddGoalFragment.newInstance(getActivity(), value -> {
-            // TODO : add calorie goal here
-            calorieGoal.setText(String.valueOf(value) + " calorie");
+            // TODO : add calorieBurned goal here
+            calorieGoal.setText(String.valueOf(value) + " calorieBurned");
 
-            goals.calorie = Integer.valueOf(value);
+            goals.setCalorie(Integer.valueOf(value));
             DataManager.saveGoals(getActivity(), goals);
         }, 1);
         addGoalFragment.show();
@@ -132,7 +140,7 @@ public class PersonalFragment extends Fragment implements ClearMemory {
             // TODO : add step goal here
             calorieGoal.setText(String.valueOf(value) + " steps");
 
-            goals.steps = Integer.valueOf(value);
+            goals.setSteps(Integer.valueOf(value));
             DataManager.saveGoals(getActivity(), goals);
         }, 2);
         addGoalFragment.show();
@@ -143,7 +151,7 @@ public class PersonalFragment extends Fragment implements ClearMemory {
         @SuppressLint("SetTextI18n") AddGoalFragment addGoalFragment = AddGoalFragment.newInstance(getActivity(), value -> {
             calorieGoal.setText(String.valueOf(value) + " distance");
 
-            goals.distance = Integer.valueOf(value);
+            goals.setDistance(Integer.valueOf(value));
             DataManager.saveGoals(getActivity(), goals);
         }, 3);
         addGoalFragment.show();
@@ -153,7 +161,7 @@ public class PersonalFragment extends Fragment implements ClearMemory {
     void saveWeight(Editable editable) {
         if (weight.getText().toString().equals("")) return;
 
-        user.weight = Integer.valueOf(weight.getText().toString());
+//        user.setWeight(Integer.valueOf(weight.getText().toString()));
     }
 
     @OnClick(R.id.edit_button)
@@ -164,7 +172,14 @@ public class PersonalFragment extends Fragment implements ClearMemory {
     @OnClick(R.id.logout)
     public void logout() {
         DataManager.deleteDB(getActivity());
-        startActivity(new Intent(getActivity(), AppLaunch.class));
-        getActivity().finish();
+
+        assert getActivity() != null;
+        AuthUI.getInstance()
+                .signOut(getActivity())
+                .addOnCompleteListener(task -> {
+                    startActivity(new Intent(getActivity(), AppLaunch.class));
+                    assert getActivity() != null;
+                    getActivity().finish();
+                });
     }
 }

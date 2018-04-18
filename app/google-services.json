@@ -15,6 +15,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "677551680814-h2gm8bea960lsu2mbnvrjs2fp2ea2061.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.fitplus.health",
+            "certificate_hash": "6fdbfd77dbb73b809b4aac4e3f470464cba107e6"
+          }
+        },
+        {
+          "client_id": "677551680814-l40d8p0kqm2ntksak0jgjpmiejf7hf38.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.fitplus.health",
+            "certificate_hash": "0938e8197a81164f1b998382eed8209131b0146c"
+          }
+        },
+        {
           "client_id": "677551680814-oac7l37iqj4nm1h5ciokg6q60go0n0a2.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,8 +45,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "677551680814-oac7l37iqj4nm1h5ciokg6q60go0n0a2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2

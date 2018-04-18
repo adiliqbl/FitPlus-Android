@@ -20,7 +20,8 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".ui.MainActivity"
-            android:label="@string/app_name" />
+            android:label="@string/app_name"
+            android:theme="@style/AlertDialog" />
 
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"
@@ -45,10 +46,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="app.fitplus.health.ui.MainActivity" />
         </activity>
-        <activity android:name=".ui.AppLaunch" />
+        <activity
+            android:name=".ui.AppLaunch"
+            android:theme="@style/SplashTheme" />
         <activity
             android:name=".ui.user.UpdateUserActivity"
-            android:theme="@style/AppTheme.Reverse" />
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".ui.SplashActivity"
             android:theme="@style/SplashTheme">
@@ -58,15 +61,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ui.user.LoginActivity"
-            android:parentActivityName=".ui.AppLaunch" />
-        <activity
-            android:name=".ui.user.RegisterActivity"
-            android:parentActivityName=".ui.AppLaunch" />
 
         <service
-            android:name=".system.PedoMeterService"
+            android:name=".system.service.PedoMeterService"
             android:enabled="true"
             android:exported="true" />
     </application>

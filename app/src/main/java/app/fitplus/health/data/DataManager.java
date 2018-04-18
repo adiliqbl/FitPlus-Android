@@ -6,15 +6,17 @@ import com.snappydb.DB;
 import com.snappydb.DBFactory;
 import com.snappydb.SnappydbException;
 
+import app.fitplus.health.data.model.Goals;
+import app.fitplus.health.data.model.Stats;
+import app.fitplus.health.data.model.User;
 import timber.log.Timber;
 
-public class DataManager {
+import static app.fitplus.health.util.Constants.DATABASE.GOALS;
+import static app.fitplus.health.util.Constants.DATABASE.PROGRESS;
+import static app.fitplus.health.util.Constants.DATABASE.USER;
+import static app.fitplus.health.util.Constants.DATABASE.USER_PREFS_NAME;
 
-    public static final String USER_PREFS_NAME = "data";
-    public static final String USER = "user";
-    public static final String isLogged = "isLogged";
-    public static final String GOALS = "goals";
-    public static final String PROGRESS = "progress";
+public class DataManager {
 
     public static void saveUser(Context context, User user) {
         try {
@@ -70,24 +72,24 @@ public class DataManager {
         return goal;
     }
 
-    public static void saveProgress(Context context, Progress progress) {
+    public static void saveProgress(Context context, Stats stats) {
         try {
             DB snappydb = DBFactory.open(context, USER_PREFS_NAME);
-            snappydb.put(GOALS, progress);
+            snappydb.put(GOALS, stats);
             snappydb.close();
         } catch (SnappydbException e) {
             Timber.e(e);
         }
         context = null;
-        progress = null;
+        stats = null;
     }
 
-    public static synchronized Progress getProgress(Context context) {
-        Progress goal = null;
+    public static synchronized Stats getProgress(Context context) {
+        Stats goal = null;
         try {
             DB snappydb = DBFactory.open(context, USER_PREFS_NAME);
             if (snappydb.exists(PROGRESS)) {
-                goal = snappydb.get(PROGRESS, Progress.class);
+                goal = snappydb.get(PROGRESS, Stats.class);
             }
             snappydb.close();
         } catch (SnappydbException e) {

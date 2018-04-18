@@ -3,6 +3,7 @@ package app.fitplus.health.ui.fragments;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -13,7 +14,7 @@ import android.widget.TextView;
 import com.github.lzyzsd.circleprogress.CircleProgress;
 
 import app.fitplus.health.data.DataManager;
-import app.fitplus.health.data.Progress;
+import app.fitplus.health.data.model.Stats;
 import app.fitplus.health.R;
 import app.fitplus.health.system.ClearMemory;
 import app.fitplus.health.ui.tracking.TrackingActivity;
@@ -31,13 +32,13 @@ public class DashboardFragment extends Fragment implements ClearMemory {
     @BindView(R.id.steps_text)
     TextView stepsText;
 
-    private Progress userProgress;
+    private Stats userStats;
 
     private Unbinder unbinder;
 
+    @NonNull
     public static DashboardFragment newInstance() {
-        DashboardFragment fragment = new DashboardFragment();
-        return fragment;
+        return new DashboardFragment();
     }
 
     public DashboardFragment() {
@@ -45,24 +46,24 @@ public class DashboardFragment extends Fragment implements ClearMemory {
 
     @SuppressLint("SetTextI18n")
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
         unbinder = ButterKnife.bind(this, view);
 
-        userProgress = DataManager.getProgress(getActivity());
+        userStats = DataManager.getProgress(getActivity());
 
-        if (userProgress != null) {
-            calorieText.setText(String.valueOf(userProgress.calorie) + " calories burned");
-            stepsText.setText(String.valueOf(userProgress.steps) + " steps taken");
+        if (userStats != null) {
+            calorieText.setText(String.valueOf(userStats.getCalorieBurned()) + " calories burned");
+            stepsText.setText(String.valueOf(userStats.getSteps()) + " steps taken");
         }
 
         return view;
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         progress.setProgress(40);

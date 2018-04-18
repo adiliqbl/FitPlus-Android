@@ -5,10 +5,11 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import org.jetbrains.annotations.Contract;
 
-import app.fitplus.health.data.User;
 import app.fitplus.health.R;
 import app.fitplus.health.system.receiver.ConnectionReceiver;
 import io.fabric.sdk.android.Fabric;
@@ -18,7 +19,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 public class Application extends android.app.Application {
 
     private static Application INSTANCE = null;
-    public static User user = null;
+    public static FirebaseUser user = null;
     public static boolean CONNECTED = Boolean.TRUE;
 
     @Override
@@ -62,5 +63,10 @@ public class Application extends android.app.Application {
     @Contract(pure = true)
     public static synchronized Application getInstance() {
         return INSTANCE;
+    }
+
+    public static FirebaseUser getUser() {
+        if (user == null) user = FirebaseAuth.getInstance().getCurrentUser();
+        return user;
     }
 }

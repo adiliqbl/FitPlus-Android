@@ -1,4 +1,4 @@
-package app.fitplus.health.system;
+package app.fitplus.health.system.service;
 
 import android.app.Service;
 import android.content.Intent;
@@ -27,8 +27,7 @@ public class PedoMeterService extends Service implements SensorEventListener, St
 
     @Override
     public IBinder onBind(Intent intent) {
-        // TODO: Return the communication channel to the service.
-        throw new UnsupportedOperationException("Not yet implemented");
+        return null;
     }
 
     @Override

@@ -11,6 +11,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
+import com.google.android.gms.maps.SupportMapFragment;
+
 import app.fitplus.health.R;
 import app.fitplus.health.system.ClearMemory;
 import app.fitplus.health.ui.fragments.AssistantFragment;
@@ -42,6 +44,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
         bottomNavigationView.setSelectedItemId(R.id.navigation_home);
+
+        // Async map load
+        new SupportMapFragment().getMapAsync(googleMap ->
+                Timber.tag("MapManager").i("Initializing map on launch"));
     }
 
     @Override
@@ -106,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     @Override
     public void onDismiss(DialogInterface dialogInterface) {
-        Timber.tag("Assistant").d("onAssistanceClose");
+        Timber.tag("Assistant").d("onAssistantDismiss");
         bottomNavigationView.setSelectedItemId(R.id.navigation_home);
     }
 }

@@ -13,7 +13,7 @@ import app.fitplus.health.R;
 
 class AddGoalFragment extends BottomSheetDialog {
 
-    EditText goal;
+    private EditText goal;
 
     private AddGoalListener callback;
 
@@ -73,7 +73,7 @@ class AddGoalFragment extends BottomSheetDialog {
         }
     }
 
-    void onAddClick() {
+    private void onAddClick() {
         if (goal.getText().toString().equals("")) return;
 
         callback.onGoalAdded(goal.getText().toString());

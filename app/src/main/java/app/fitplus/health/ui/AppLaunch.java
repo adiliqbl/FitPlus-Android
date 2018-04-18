@@ -9,16 +9,22 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 
+import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.IdpResponse;
+import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.Arrays;
+
 import app.fitplus.health.R;
-import app.fitplus.health.ui.user.LoginActivity;
-import app.fitplus.health.ui.user.RegisterActivity;
+import app.fitplus.health.system.Application;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import timber.log.Timber;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class AppLaunch extends AppCompatActivity {
 
-    private boolean check = false;
+    private static final int SIGN_IN = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,15 +43,22 @@ public class AppLaunch extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 1) {
-            if (resultCode == 10) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SIGN_IN) {
+            IdpResponse response = IdpResponse.fromResultIntent(data);
+
+            if (resultCode == RESULT_OK) {
+
+                // TODO : load other data from firebase
+
+                Application.user = FirebaseAuth.getInstance().getCurrentUser();
                 launchApp();
-            } else if (resultCode == 20) {
-                startActivityForResult(new Intent(this, RegisterActivity.class), 2);
+            } else {
+                if (response != null && response.getError() != null) {
+                    Timber.e(response.getError());
+                }
             }
-        } else if (requestCode == 10) {
-            launchApp();
-        } else super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     @Override
@@ -66,6 +79,15 @@ public class AppLaunch extends AppCompatActivity {
 
     @OnClick(R.id.login_app)
     public void login() {
-        startActivityForResult(new Intent(AppLaunch.this, LoginActivity.class), 1);
+        startActivityForResult(
+                AuthUI.getInstance()
+                        .createSignInIntentBuilder()
+                        .setAvailableProviders(Arrays.asList(
+                                new AuthUI.IdpConfig.EmailBuilder().build(),
+                                new AuthUI.IdpConfig.PhoneBuilder().build(),
+                                new AuthUI.IdpConfig.GoogleBuilder().build()))
+                        .setTheme(R.style.AppTheme_Reverse)
+                        .build(),
+                SIGN_IN);
     }
 }

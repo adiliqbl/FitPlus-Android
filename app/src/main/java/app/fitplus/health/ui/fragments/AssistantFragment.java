@@ -1,6 +1,7 @@
 package app.fitplus.health.ui.fragments;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -86,6 +87,7 @@ public class AssistantFragment extends BottomSheetDialog implements SpeechDelega
         }
     }
 
+    @SuppressLint("CheckResult")
     private void handleAssistant() {
         if (activity.get() != null) Speech.init(activity.get());
 
