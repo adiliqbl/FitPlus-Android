@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.firebase.auth.PhoneAuthProvider;
+
 import app.fitplus.health.R;
 import app.fitplus.health.data.DataManager;
 import app.fitplus.health.data.model.Goals;
@@ -77,7 +79,7 @@ public class PersonalFragment extends Fragment implements ClearMemory {
 
         name.setText(getUser().getDisplayName());
 
-        if ("".equals(getUser().getEmail())) {
+        if (getUser().getProviderId().equals(PhoneAuthProvider.PROVIDER_ID)) {
             email.setText(getUser().getPhoneNumber());
         } else email.setText(getUser().getEmail());
 

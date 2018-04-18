@@ -29,6 +29,7 @@
         <activity
             android:name=".ui.tracking.TrackingActivity"
             android:label="@string/title_activity_maps"
+            android:parentActivityName=".ui.MainActivity"
             android:theme="@style/MapTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -40,7 +41,7 @@
         <activity
             android:name=".ui.user.UpdateUserActivity"
             android:parentActivityName=".ui.MainActivity"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme.Reverse" />
         <activity
             android:name=".ui.SplashActivity"
             android:theme="@style/SplashTheme">
@@ -50,7 +51,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.user.CompleteRegistration" />
+        <activity
+            android:name=".ui.user.CompleteRegistration"
+            android:theme="@style/AppTheme.Reverse" />
 
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"

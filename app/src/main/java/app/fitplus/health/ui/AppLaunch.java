@@ -90,6 +90,7 @@ public class AppLaunch extends AppCompatActivity {
                                 new AuthUI.IdpConfig.PhoneBuilder().build(),
                                 new AuthUI.IdpConfig.GoogleBuilder().build()))
                         .setTheme(R.style.AppTheme_Reverse)
+                        .setLogo(R.drawable.logo_vector)
                         .build(),
                 SIGN_IN);
     }

@@ -36,7 +36,7 @@ public class CompleteRegistration extends RxAppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.update_settings);
+        setContentView(R.layout.complete_register);
         ButterKnife.bind(this);
 
         setSupportActionBar(findViewById(R.id.toolbar));
