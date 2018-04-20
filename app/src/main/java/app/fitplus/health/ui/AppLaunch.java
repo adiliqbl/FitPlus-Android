@@ -1,6 +1,5 @@
 package app.fitplus.health.ui;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -21,7 +20,6 @@ import app.fitplus.health.ui.user.CompleteRegistration;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import timber.log.Timber;
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class AppLaunch extends AppCompatActivity {
 
@@ -35,11 +33,6 @@ public class AppLaunch extends AppCompatActivity {
 
         if (ContextCompat.checkSelfPermission(AppLaunch.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
             ActivityCompat.requestPermissions(AppLaunch.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 2);
-    }
-
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
     @Override

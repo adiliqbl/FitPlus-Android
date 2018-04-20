@@ -20,6 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/padding_small"
         android:layout_weight="1"
         app:layout_constraintTop_toBottomOf="@id/toolbar">
 
@@ -28,7 +29,7 @@
             style="@style/Text.Regular"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:hint="Name"
+            android:hint="@string/first_and_last_name"
             android:imeOptions="actionNext"
             android:inputType="textFilter|textPersonName|textCapWords"
             android:maxLines="1" />
@@ -36,7 +37,7 @@
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/phone_container"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
@@ -48,7 +49,8 @@
             style="@style/Text.Regular"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:hint="Email"
+            android:enabled="false"
+            android:hint="@string/registered_with"
             android:imeOptions="actionNext"
             android:inputType="textEmailAddress"
             android:maxLines="1" />
@@ -63,11 +65,7 @@
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:layout_marginTop="@dimen/padding_small"
-        android:backgroundTint="@color/colorAccent"
-        android:elevation="15dp"
-        android:stateListAnimator="@null"
-        android:text="Update"
-        android:textColor="@color/white"
+        android:text="@string/update"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/phone_container" />

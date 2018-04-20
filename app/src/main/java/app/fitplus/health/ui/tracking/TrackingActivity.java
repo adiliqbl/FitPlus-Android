@@ -14,7 +14,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
@@ -40,27 +39,27 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.concurrent.TimeUnit;
 
+import app.fitplus.health.R;
 import app.fitplus.health.data.DataManager;
 import app.fitplus.health.data.model.Stats;
-import app.fitplus.health.Pedometer.CaloryCalculator;
-import app.fitplus.health.R;
 import app.fitplus.health.system.ClearMemory;
 import app.fitplus.health.system.events.PedometerEvent;
 import app.fitplus.health.system.service.PedoMeterService;
+import app.fitplus.health.system.service.Pedometer.CaloryCalculator;
 import app.fitplus.health.util.AnimUtil;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import timber.log.Timber;
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
-public class TrackingActivity extends FragmentActivity implements OnMapReadyCallback,
+public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyCallback,
         OnSuccessListener<Location>, ClearMemory {
 
     private int STARTED = 0;
@@ -95,11 +94,6 @@ public class TrackingActivity extends FragmentActivity implements OnMapReadyCall
         mapFragment.getMapAsync(this);
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-    }
-
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
     void setMapGestures() {
@@ -450,7 +444,7 @@ public class TrackingActivity extends FragmentActivity implements OnMapReadyCall
     }
 
     @SuppressLint("SetTextI18n")
-    @Subscribe
+    @Subscribe(sticky = true)
     public void onEvent(PedometerEvent event) {
         stepCount += event.getSteps();
         calorieBurnCount = calculate.steptocal(event.getSteps(), 0);
@@ -458,5 +452,7 @@ public class TrackingActivity extends FragmentActivity implements OnMapReadyCall
         double dist = event.getSteps() * 0.001;
         distance.setText(String.valueOf(dist) + " km");
         calorie.setText(String.valueOf(calculate.steptocal(event.getSteps(), 0)));
+
+        EventBus.getDefault().removeStickyEvent(event);
     }
 }

@@ -10,8 +10,8 @@ import android.os.IBinder;
 
 import org.greenrobot.eventbus.EventBus;
 
-import app.fitplus.health.Pedometer.StepDetector;
-import app.fitplus.health.Pedometer.StepListener;
+import app.fitplus.health.system.service.Pedometer.StepDetector;
+import app.fitplus.health.system.service.Pedometer.StepListener;
 import app.fitplus.health.system.events.PedometerEvent;
 
 public class PedoMeterService extends Service implements SensorEventListener, StepListener {
@@ -84,7 +84,7 @@ public class PedoMeterService extends Service implements SensorEventListener, St
     @Override
     public void step(long timeNs) {
         numSteps++;
-        EventBus.getDefault().post(new PedometerEvent(numSteps));
+        EventBus.getDefault().postSticky(new PedometerEvent(numSteps));
     }
 
     @Override

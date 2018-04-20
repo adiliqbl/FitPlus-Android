@@ -13,13 +13,11 @@ import com.google.firebase.auth.FirebaseUser;
 
 import org.jetbrains.annotations.Contract;
 
-import app.fitplus.health.R;
 import app.fitplus.health.data.DataManager;
 import app.fitplus.health.system.receiver.ConnectionReceiver;
 import app.fitplus.health.ui.AppLaunch;
 import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
-import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 public class Application extends android.app.Application {
 
@@ -31,14 +29,6 @@ public class Application extends android.app.Application {
     public void onCreate() {
         super.onCreate();
         INSTANCE = Application.this;
-
-
-        // Default Font
-        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
-                .setDefaultFontPath("fonts/PierSans-Regular.ttf")
-                .setFontAttrId(R.attr.fontPath)
-                .build()
-        );
 
         /*
          * Timber Initialization

@@ -1,10 +1,10 @@
 package app.fitplus.health.ui.user;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.widget.EditText;
 
+import com.google.firebase.auth.PhoneAuthProvider;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
 import app.fitplus.health.R;
@@ -14,9 +14,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 import static app.fitplus.health.system.Application.CONNECTED;
+import static app.fitplus.health.system.Application.getUser;
 
 public class UpdateUserActivity extends RxAppCompatActivity {
 
@@ -35,16 +35,13 @@ public class UpdateUserActivity extends RxAppCompatActivity {
 
         setSupportActionBar(findViewById(R.id.toolbar));
         if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    }
 
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
-    }
-
-    @OnClick(R.id.close)
-    public void close() {
-        finish();
+        name.setText(getUser().getDisplayName());
+        if (getUser().getProviderId().equals(PhoneAuthProvider.PROVIDER_ID)) {
+            phone.setText(getUser().getPhoneNumber());
+        } else {
+            phone.setText(getUser().getEmail());
+        }
     }
 
     @OnTextChanged(value = R.id.phone, callback = OnTextChanged.Callback.TEXT_CHANGED)

@@ -1,12 +1,15 @@
 package app.fitplus.health.data.model
 
+import android.arch.persistence.room.Entity
+import android.arch.persistence.room.PrimaryKey
 import java.io.Serializable
 
+@Entity(tableName = "User")
 class User : Serializable {
-    var id: String? = null
-    var name: String? = null
-    var email: String? = null
-    var phone: String? = null
-    var username: String? = null
+
+    @PrimaryKey(autoGenerate = false)
+    lateinit var id: String
+
     var weight = 0
+    var sessionLength = 0
 }

@@ -1,6 +1,5 @@
 package app.fitplus.health.ui.user;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
@@ -19,7 +18,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 import static app.fitplus.health.system.Application.CONNECTED;
 import static app.fitplus.health.system.Application.getUser;
@@ -43,11 +41,6 @@ public class CompleteRegistration extends RxAppCompatActivity {
         if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         phone.setText(getUser().getPhoneNumber());
-    }
-
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
     @OnTextChanged(value = R.id.name, callback = OnTextChanged.Callback.TEXT_CHANGED)

@@ -13,16 +13,17 @@ import android.widget.Toast;
 
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
+import net.gotev.speech.GoogleVoiceTypingDisabledException;
+import net.gotev.speech.Speech;
+import net.gotev.speech.SpeechDelegate;
+import net.gotev.speech.SpeechRecognitionNotAvailable;
+import net.gotev.speech.SpeechUtil;
+import net.gotev.speech.ui.SpeechProgressView;
+
 import java.lang.ref.WeakReference;
 import java.util.List;
 
 import app.fitplus.health.R;
-import app.fitplus.health.Speech.GoogleVoiceTypingDisabledException;
-import app.fitplus.health.Speech.Speech;
-import app.fitplus.health.Speech.SpeechDelegate;
-import app.fitplus.health.Speech.SpeechRecognitionNotAvailable;
-import app.fitplus.health.Speech.SpeechUtil;
-import app.fitplus.health.Speech.ui.SpeechProgressView;
 import app.fitplus.health.ui.MainActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -66,8 +67,7 @@ public class AssistantFragment extends BottomSheetDialog implements SpeechDelega
                     switch (newState) {
                         case BottomSheetBehavior.STATE_HIDDEN:
                             Speech.getInstance().shutdown();
-                            dismiss(); //if you want the modal to be dismissed
-
+                            dismiss();
                             break;
                         case BottomSheetBehavior.STATE_EXPANDED:
                             break;
@@ -133,7 +133,6 @@ public class AssistantFragment extends BottomSheetDialog implements SpeechDelega
     public void onSpeechResult(String result) {
         if (result.isEmpty()) {
             Speech.getInstance().say("Could you please repeat?");
-
         } else {
             Speech.getInstance().say(result);
         }
@@ -172,5 +171,4 @@ public class AssistantFragment extends BottomSheetDialog implements SpeechDelega
                 })
                 .show();
     }
-
 }

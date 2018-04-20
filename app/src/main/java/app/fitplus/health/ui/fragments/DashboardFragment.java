@@ -12,10 +12,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.github.lzyzsd.circleprogress.CircleProgress;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 
+import app.fitplus.health.R;
 import app.fitplus.health.data.DataManager;
 import app.fitplus.health.data.model.Stats;
-import app.fitplus.health.R;
 import app.fitplus.health.system.ClearMemory;
 import app.fitplus.health.ui.tracking.TrackingActivity;
 import butterknife.BindView;
@@ -32,9 +36,14 @@ public class DashboardFragment extends Fragment implements ClearMemory {
     @BindView(R.id.steps_text)
     TextView stepsText;
 
+    @BindView(R.id.adView)
+    AdView mAdView;
+
     private Stats userStats;
 
     private Unbinder unbinder;
+
+    private InterstitialAd mInterstitialAd;
 
     @NonNull
     public static DashboardFragment newInstance() {
@@ -67,6 +76,13 @@ public class DashboardFragment extends Fragment implements ClearMemory {
         super.onViewCreated(view, savedInstanceState);
 
         progress.setProgress(40);
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
+        mInterstitialAd = new InterstitialAd(getActivity());
+        mInterstitialAd.setAdUnitId("ca-app-pub-3251178974833355/6522036044");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
     }
 
     @Override
@@ -79,6 +95,7 @@ public class DashboardFragment extends Fragment implements ClearMemory {
     @Override
     public void clearMemory() {
         unbinder = null;
+        mInterstitialAd = null;
     }
 
     @OnClick(R.id.calorie)
@@ -94,7 +111,21 @@ public class DashboardFragment extends Fragment implements ClearMemory {
     @OnClick(R.id.start_activity)
     public void beginActivity() {
         if (isAdded()) {
-            startActivity(new Intent(getActivity(), TrackingActivity.class));
+            if (mInterstitialAd.isLoaded()) {
+                mInterstitialAd.show();
+
+                mInterstitialAd.setAdListener(new AdListener() {
+                    @Override
+                    public void onAdClosed() {
+                        startActivity(new Intent(getActivity(), TrackingActivity.class));
+                        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+                    }
+
+                });
+            } else {
+                startActivity(new Intent(getActivity(), TrackingActivity.class));
+                mInterstitialAd.loadAd(new AdRequest.Builder().build());
+            }
         }
     }
 }

@@ -1,6 +1,5 @@
 package app.fitplus.health.ui;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,6 +10,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.maps.SupportMapFragment;
 
 import app.fitplus.health.R;
@@ -22,7 +22,6 @@ import app.fitplus.health.ui.fragments.PersonalFragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener,
         ClearMemory, AssistantFragment.OnDismissListener {
@@ -48,11 +47,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         // Async map load
         new SupportMapFragment().getMapAsync(googleMap ->
                 Timber.tag("MapManager").i("Initializing map on launch"));
-    }
 
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+        MobileAds.initialize(this, "ca-app-pub-3251178974833355~6592011781");
     }
 
     @Override

@@ -18,7 +18,7 @@ import com.google.firebase.auth.PhoneAuthProvider;
 import app.fitplus.health.R;
 import app.fitplus.health.data.DataManager;
 import app.fitplus.health.data.model.Goals;
-import app.fitplus.health.data.model.Health;
+import app.fitplus.health.data.model.User;
 import app.fitplus.health.system.Application;
 import app.fitplus.health.system.ClearMemory;
 import app.fitplus.health.system.component.CustomToast;
@@ -50,7 +50,7 @@ public class PersonalFragment extends Fragment implements ClearMemory {
     private Unbinder unbinder;
 
     private Goals goals = null;
-    private Health health = null;
+    private User health = null;
 
     @NonNull
     public static PersonalFragment newInstance() {

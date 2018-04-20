@@ -8,10 +8,10 @@ import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
 
 import app.fitplus.health.data.model.Goals;
-import app.fitplus.health.data.model.Health;
 import app.fitplus.health.data.model.Stats;
+import app.fitplus.health.data.model.User;
 
-@Database(entities = {Goals.class, Health.class, Stats.class}, version = 1)
+@Database(entities = {User.class, Goals.class, Stats.class}, version = 1)
 @TypeConverters({Converters.class})
 public class AppDatabase extends RoomDatabase {
 
