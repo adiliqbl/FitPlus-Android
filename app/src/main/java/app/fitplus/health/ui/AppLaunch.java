@@ -51,7 +51,8 @@ public class AppLaunch extends AppCompatActivity {
                     startActivity(new Intent(this, CompleteRegistration.class));
                     finish();
                 } else {
-                    startActivity(new Intent(AppLaunch.this, MainActivity.class));
+                    startActivity(new Intent(AppLaunch.this, MainActivity.class)
+                            .putExtra("login", true));
                     finish();
                 }
             } else {

@@ -5,7 +5,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="app.competition.health.ui.MainActivity">
+    tools:context=".ui.MainActivity">
 
     <include
         android:id="@+id/toolbar"
@@ -21,6 +21,12 @@
         android:layout_above="@id/bottom_navigation"
         android:layout_below="@id/toolbar"
         android:animateLayoutChanges="true" />
+
+    <FrameLayout
+        android:id="@+id/assistant_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" />
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/bottom_navigation"

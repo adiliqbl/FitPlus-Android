@@ -26,7 +26,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/padding_normal"
-            android:text="Asad Mahmood"
             android:textColor="@color/black"
             app:layout_constraintBottom_toTopOf="@id/email"
             app:layout_constraintLeft_toRightOf="@id/profile_image"
@@ -39,7 +38,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/padding_normal"
-            android:text="email@gmail.com"
             app:layout_constraintBottom_toBottomOf="@id/profile_image"
             app:layout_constraintLeft_toRightOf="@id/profile_image"
             app:layout_constraintTop_toBottomOf="@id/name"
@@ -74,6 +72,21 @@
             android:textColor="@color/textColorDefaultDark"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/div1" />
+
+        <Button
+            android:id="@+id/save_goals"
+            style="@style/Base.Widget.AppCompat.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="0dp"
+            android:text="@string/save"
+            android:textAllCaps="true"
+            android:textAppearance="@style/Text.Regular.Bold"
+            android:textColor="@color/colorAccent"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/goals_heading"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/goals_heading" />
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/goals_container"
@@ -188,7 +201,7 @@
                 <TextView
                     android:id="@+id/calorie_burned"
                     style="@style/Text.Small"
-                    android:layout_width="wrap_content"
+                    android:layout_width="90dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/padding_small"
                     android:gravity="center"
@@ -202,7 +215,7 @@
                 <TextView
                     android:id="@+id/total_steps"
                     style="@style/Text.Small"
-                    android:layout_width="wrap_content"
+                    android:layout_width="90dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/padding_small"
                     android:gravity="center"
@@ -215,7 +228,7 @@
                 <TextView
                     android:id="@+id/distance_covered"
                     style="@style/Text.Small"
-                    android:layout_width="wrap_content"
+                    android:layout_width="90dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/padding_small"
                     android:gravity="center"
@@ -243,7 +256,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/activity_horizontal_margin"
             android:layout_marginTop="@dimen/padding_normal"
-            android:text="Health Settings"
+            android:text="@string/health_settings"
             android:textColor="@color/textColorDefaultDark"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/div2" />
@@ -254,7 +267,8 @@
             android:layout_height="@dimen/button_large_height"
             android:layout_marginTop="@dimen/padding_medium"
             android:background="@color/white"
-            android:padding="@dimen/padding_medium"
+            android:paddingLeft="@dimen/padding_medium"
+            android:paddingRight="@dimen/padding_medium"
             app:layout_constraintTop_toBottomOf="@id/preferences_heading">
 
             <de.hdodenhof.circleimageview.CircleImageView
@@ -276,6 +290,14 @@
                 app:layout_constraintTop_toTopOf="@id/icon"
                 tools:ignore="ContentDescription" />
 
+            <!-- Dummy item to prevent AutoCompleteTextView from receiving focus -->
+            <LinearLayout
+                android:layout_width="0px"
+                android:layout_height="0px"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                tools:ignore="UselessLeaf" />
+
             <EditText
                 android:id="@+id/weight"
                 style="@style/Text.Regular.Small"
@@ -283,8 +305,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/padding_medium"
                 android:digits="0123456789"
+                android:hint="Set"
+                android:imeActionId="6"
+                android:imeActionLabel="@string/save"
+                android:imeOptions="actionDone"
                 android:inputType="number"
-                android:text="0"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toRightOf="@id/icon"
                 app:layout_constraintTop_toTopOf="parent"
@@ -293,7 +318,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="kg weight"
+                android:text="@string/placeholder_weight"
                 app:layout_constraintBottom_toBottomOf="@id/weight"
                 app:layout_constraintLeft_toRightOf="@id/weight"
                 app:layout_constraintTop_toTopOf="@id/weight" />
@@ -304,7 +329,8 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/button_large_height"
             android:background="@color/white"
-            android:padding="@dimen/padding_medium"
+            android:paddingLeft="@dimen/padding_medium"
+            android:paddingRight="@dimen/padding_medium"
             app:layout_constraintTop_toBottomOf="@id/weight_container">
 
             <de.hdodenhof.circleimageview.CircleImageView
@@ -318,7 +344,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_directions_run_black_24dp"
+                android:src="@drawable/ic_timer_black_24dp"
                 android:tint="@color/white"
                 app:layout_constraintBottom_toBottomOf="@id/activity_icon"
                 app:layout_constraintLeft_toLeftOf="@id/activity_icon"
@@ -326,15 +352,38 @@
                 app:layout_constraintTop_toTopOf="@id/activity_icon"
                 tools:ignore="ContentDescription" />
 
-            <TextView
+            <!-- Dummy item to prevent AutoCompleteTextView from receiving focus -->
+            <LinearLayout
+                android:layout_width="0px"
+                android:layout_height="0px"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                tools:ignore="UselessLeaf" />
+
+            <EditText
                 android:id="@+id/session_length"
-                android:layout_width="wrap_content"
+                style="@style/Text.Regular.Small"
+                android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/padding_medium"
-                android:text="20 minutes session length"
-                app:layout_constraintBottom_toBottomOf="@id/activity_icon"
+                android:digits="0123456789"
+                android:hint="20"
+                android:imeActionId="6"
+                android:imeActionLabel="@string/save"
+                android:imeOptions="actionDone"
+                android:inputType="number"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toRightOf="@id/activity_icon"
-                app:layout_constraintTop_toTopOf="@id/activity_icon" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="LabelFor" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/placeholder_session_length"
+                app:layout_constraintBottom_toBottomOf="@id/session_length"
+                app:layout_constraintLeft_toRightOf="@id/session_length"
+                app:layout_constraintTop_toTopOf="@id/session_length" />
         </android.support.constraint.ConstraintLayout>
 
         <TextView
@@ -343,11 +392,12 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/button_large_height"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:gravity="center_vertical|left"
+            android:gravity="center_vertical|start"
             android:padding="@dimen/padding_medium"
-            android:text="Logout"
+            android:text="@string/logout"
             android:textAppearance="@style/Text.Regular"
             android:textColor="@color/textColorDefault"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/activity_time_container" />
     </android.support.constraint.ConstraintLayout>
 </ScrollView>

@@ -2,6 +2,7 @@ package app.fitplus.health.ui.fragments;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
@@ -11,7 +12,7 @@ import android.widget.TextView;
 
 import app.fitplus.health.R;
 
-class AddGoalFragment extends BottomSheetDialog {
+class AddGoalFragment extends BottomSheetDialog implements BottomSheetDialog.OnDismissListener {
 
     private EditText goal;
 
@@ -29,6 +30,8 @@ class AddGoalFragment extends BottomSheetDialog {
         super(context);
         View contentView = View.inflate(getContext(), R.layout.bottom_add, null);
         setContentView(contentView);
+
+        setOnDismissListener(this);
 
         configureBottomSheetBehavior(contentView);
         setCanceledOnTouchOutside(true);
@@ -76,8 +79,13 @@ class AddGoalFragment extends BottomSheetDialog {
     private void onAddClick() {
         if (goal.getText().toString().equals("")) return;
 
-        callback.onGoalAdded(goal.getText().toString());
+        callback.onGoalAdded(goal.getText().toString().replaceAll("[^\\d.]", ""));
         dismiss();
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialogInterface) {
+        ((AddGoalFragment) dialogInterface).callback = null;
     }
 
     public interface AddGoalListener {

@@ -27,19 +27,19 @@ import app.fitplus.health.R;
 import app.fitplus.health.ui.MainActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
-public class AssistantFragment extends BottomSheetDialog implements SpeechDelegate {
+public class AssistantFragment extends BottomSheetDialog implements SpeechDelegate,
+        DialogInterface.OnDismissListener {
 
     @BindView(R.id.progress)
     SpeechProgressView progress;
 
     private WeakReference<MainActivity> activity;
+    private AssistantListener listener;
 
-    public static AssistantFragment newInstance(Context context, OnDismissListener listener,
-                                                MainActivity activity) {
-        AssistantFragment assistantFragment = new AssistantFragment(context, activity);
-        assistantFragment.setOnDismissListener(listener);
-        return assistantFragment;
+    public static AssistantFragment newInstance(final MainActivity activity) {
+        return new AssistantFragment(activity, activity);
     }
 
     private AssistantFragment(@NonNull Context context, MainActivity activity) {
@@ -49,6 +49,7 @@ public class AssistantFragment extends BottomSheetDialog implements SpeechDelega
         ButterKnife.bind(this, contentView);
 
         setOwnerActivity(activity);
+        setOnDismissListener(this);
         this.activity = new WeakReference<>(activity);
 
         configureBottomSheetBehavior(contentView);
@@ -66,7 +67,6 @@ public class AssistantFragment extends BottomSheetDialog implements SpeechDelega
                 public void onStateChanged(@NonNull View bottomSheet, int newState) {
                     switch (newState) {
                         case BottomSheetBehavior.STATE_HIDDEN:
-                            Speech.getInstance().shutdown();
                             dismiss();
                             break;
                         case BottomSheetBehavior.STATE_EXPANDED:
@@ -99,7 +99,7 @@ public class AssistantFragment extends BottomSheetDialog implements SpeechDelega
                     .request(Manifest.permission.RECORD_AUDIO)
                     .subscribe(granted -> {
                         if (granted) { // Always true pre-M
-                            onRecordAudioPermissionGranted();
+                            startListening();
                         } else {
                             Toast.makeText(activity.get(), "Permission is required", Toast.LENGTH_LONG).show();
                         }
@@ -107,16 +107,16 @@ public class AssistantFragment extends BottomSheetDialog implements SpeechDelega
         }
     }
 
-    private void onRecordAudioPermissionGranted() {
+    private void startListening() {
         try {
             Speech.getInstance().stopTextToSpeech();
             Speech.getInstance().startListening(progress, this);
-
         } catch (SpeechRecognitionNotAvailable exc) {
             showSpeechNotSupportedDialog();
-
+            Timber.e(exc);
         } catch (GoogleVoiceTypingDisabledException exc) {
             showEnableGoogleVoiceTyping();
+            Timber.e(exc);
         }
     }
 
@@ -170,5 +170,18 @@ public class AssistantFragment extends BottomSheetDialog implements SpeechDelega
                     // do nothing
                 })
                 .show();
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialogInterface) {
+        Speech.getInstance().shutdown();
+        if (listener != null) listener.onAssistantClosed();
+
+        activity.clear();
+        activity = null;
+    }
+
+    public interface AssistantListener {
+        void onAssistantClosed();
     }
 }

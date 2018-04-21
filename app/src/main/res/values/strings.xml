@@ -6,18 +6,31 @@
     <string name="title_personal">Personal</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_maps">Tracking</string>
-    <string name="sign_in">Sign in</string>
     <string name="fitplus_assistant">FitPlus Assistant</string>
-    <string name="fitplus">FitPlus</string>
-    <string name="complete_registration">Complete Registration</string>
-    <string name="logout">Logout</string>
+
     <string name="first_and_last_name">First and last name</string>
+    <string name="save">Save</string>
+    <string name="sign_in">Sign in</string>
+    <string name="fitplus">FitPlus</string>
+    <string name="logout">Logout</string>
     <string name="update">Update</string>
     <string name="registered_with">Registered with</string>
     <string name="start_activity">Start Activity</string>
+    <string name="health_settings">Health Settings</string>
+
+    <!--Messages-->
+    <string name="msg_no_activity">No activity yet</string>
+    <string name="msg_profile_update">Updating profile</string>
+    <string name="msg_pref_success">Preferences updated successfully</string>
+    <string name="msg_profile_update_success">Profile updated successfully</string>
 
     <!--Errors-->
     <string name="error_no_internet">No internet connection</string>
     <string name="error_unknown">Unknown error occurred</string>
     <string name="error_time_out">Connection timed out</string>
+    <string name="error_failed_update">Failed to update profile</string>
+
+    <!-- Placeholders -->
+    <string name="placeholder_session_length">minutes session length</string>
+    <string name="placeholder_weight">kg weight</string>
 </resources>

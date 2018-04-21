@@ -10,10 +10,11 @@ import com.crashlytics.android.Crashlytics;
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.jetbrains.annotations.Contract;
 
-import app.fitplus.health.data.DataManager;
+import app.fitplus.health.data.FirebaseStorage;
 import app.fitplus.health.system.receiver.ConnectionReceiver;
 import app.fitplus.health.ui.AppLaunch;
 import io.fabric.sdk.android.Fabric;
@@ -46,6 +47,8 @@ public class Application extends android.app.Application {
                 .build();
         Fabric.with(fabric);
 
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 
             // Registering Internet Receiver
@@ -66,7 +69,7 @@ public class Application extends android.app.Application {
     }
 
     public void Logout(Activity activity) {
-        DataManager.deleteDB(activity);
+        FirebaseStorage.deleteDB(activity);
 
         AuthUI.getInstance()
                 .signOut(activity)

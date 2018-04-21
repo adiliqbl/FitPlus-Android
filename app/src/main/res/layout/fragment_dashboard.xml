@@ -10,7 +10,8 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp">
+        android:layout_height="0dp"
+        android:animateLayoutChanges="true">
 
         <View
             android:id="@+id/topBackground"
@@ -164,13 +165,15 @@
             android:text="@string/start_activity"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/adView" />
+            app:layout_constraintTop_toBottomOf="@id/adView"
+            app:layout_goneMarginTop="@dimen/padding_small" />
 
         <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
             android:id="@+id/adView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/padding_small"
+            android:visibility="gone"
             ads:adSize="SMART_BANNER"
             ads:adUnitId="ca-app-pub-3251178974833355/9186740750"
             ads:layout_constraintTop_toBottomOf="@id/steps" />

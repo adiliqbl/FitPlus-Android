@@ -45,7 +45,7 @@ public class CompleteRegistration extends RxAppCompatActivity {
 
     @OnTextChanged(value = R.id.name, callback = OnTextChanged.Callback.TEXT_CHANGED)
     public void onNameChange(CharSequence charSequence, int i, int i1, int i2) {
-        InputChecks.ShowNameErrors(phone.getText().toString(), nameContainer);
+        InputChecks.ShowNameErrors(name.getText().toString(), nameContainer);
     }
 
     @OnClick(R.id.save)

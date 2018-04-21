@@ -47,7 +47,7 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.concurrent.TimeUnit;
 
 import app.fitplus.health.R;
-import app.fitplus.health.data.DataManager;
+import app.fitplus.health.data.FirebaseStorage;
 import app.fitplus.health.data.model.Stats;
 import app.fitplus.health.system.ClearMemory;
 import app.fitplus.health.system.events.PedometerEvent;
@@ -418,11 +418,11 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
     }
 
     private void saveTrackData() {
-        Stats stats = DataManager.getProgress(this);
+        Stats stats = FirebaseStorage.getProgress(this);
         if (stats == null) stats = new Stats();
         stats.setCalorieBurned(stats.getCalorieBurned() + ((Double) calorieBurnCount).intValue());
         stats.setSteps(stats.getSteps() + stepCount);
-        DataManager.saveProgress(this, stats);
+        FirebaseStorage.saveProgress(this, stats);
     }
 
     boolean isMyServiceRunning(Class<?> serviceClass) {

@@ -12,20 +12,24 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.github.lzyzsd.circleprogress.CircleProgress;
+import com.google.ads.mediation.admob.AdMobAdapter;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 
 import app.fitplus.health.R;
-import app.fitplus.health.data.DataManager;
+import app.fitplus.health.data.DataProvider;
 import app.fitplus.health.data.model.Stats;
 import app.fitplus.health.system.ClearMemory;
+import app.fitplus.health.ui.MainActivity;
 import app.fitplus.health.ui.tracking.TrackingActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+
+import static app.fitplus.health.ui.MainActivity.REFRESH_DATA;
 
 public class DashboardFragment extends Fragment implements ClearMemory {
 
@@ -39,15 +43,16 @@ public class DashboardFragment extends Fragment implements ClearMemory {
     @BindView(R.id.adView)
     AdView mAdView;
 
-    private Stats userStats;
-
+    private DataProvider dataProvider;
     private Unbinder unbinder;
 
     private InterstitialAd mInterstitialAd;
 
     @NonNull
-    public static DashboardFragment newInstance() {
-        return new DashboardFragment();
+    public static DashboardFragment newInstance(final DataProvider dataProvider) {
+        DashboardFragment fragment = new DashboardFragment();
+        fragment.dataProvider = dataProvider;
+        return fragment;
     }
 
     public DashboardFragment() {
@@ -60,14 +65,6 @@ public class DashboardFragment extends Fragment implements ClearMemory {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
         unbinder = ButterKnife.bind(this, view);
-
-        userStats = DataManager.getProgress(getActivity());
-
-        if (userStats != null) {
-            calorieText.setText(String.valueOf(userStats.getCalorieBurned()) + " calories burned");
-            stepsText.setText(String.valueOf(userStats.getSteps()) + " steps taken");
-        }
-
         return view;
     }
 
@@ -75,14 +72,48 @@ public class DashboardFragment extends Fragment implements ClearMemory {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        progress.setProgress(40);
-
-        AdRequest adRequest = new AdRequest.Builder().build();
+        Bundle extras = new Bundle();
+        extras.putBoolean("is_designed_for_families", true);
+        AdRequest adRequest = new AdRequest.Builder()
+                .addNetworkExtrasBundle(AdMobAdapter.class, extras)
+                .build();
         mAdView.loadAd(adRequest);
+        mAdView.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                super.onAdLoaded();
+                if (mAdView != null) {
+                    mAdView.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onAdClosed() {
+                super.onAdClosed();
+                if (mAdView != null) {
+                    mAdView.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onAdFailedToLoad(int i) {
+                super.onAdFailedToLoad(i);
+                if (mAdView != null) {
+                    mAdView.setVisibility(View.GONE);
+                }
+            }
+        });
 
         mInterstitialAd = new InterstitialAd(getActivity());
         mInterstitialAd.setAdUnitId("ca-app-pub-3251178974833355/6522036044");
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (REFRESH_DATA) refreshData();
     }
 
     @Override
@@ -127,5 +158,35 @@ public class DashboardFragment extends Fragment implements ClearMemory {
                 mInterstitialAd.loadAd(new AdRequest.Builder().build());
             }
         }
+    }
+
+    @OnClick(R.id.goals_button)
+    public void openPersonalFragment() {
+        if (isAdded()) ((MainActivity) getActivity()).openPersonalFragment();
+    }
+
+    public void onDataLoaded() {
+        if (isAdded()) fillViews();
+    }
+
+    private void fillViews() {
+        // TODO : Update circular progress here also
+
+        progress.setProgress(40);
+
+        Stats stats = dataProvider.getStats();
+        if (stats != null) {
+            calorieText.setText(String.format("%s calories burned", String.valueOf(stats.getCalorieBurned())));
+            stepsText.setText(String.format("%s steps taken", String.valueOf(stats.getSteps())));
+        } else {
+            calorieText.setText(R.string.msg_no_activity);
+            stepsText.setText(R.string.msg_no_activity);
+        }
+    }
+
+    private void refreshData() {
+        // TODO : when goals are updated
+        fillViews();
+        REFRESH_DATA = false;
     }
 }

@@ -32,3 +32,10 @@
 
 -keepattributes Signature
 -keepattributes *Annotation*
+
+# Room
+# Add this global rule
+-keepattributes Signature
+-keepclassmembers class app.fitplus.health.data.model.** {
+  *;
+ }

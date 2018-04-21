@@ -2,10 +2,12 @@ package app.fitplus.health.data.model
 
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
+import com.google.firebase.database.IgnoreExtraProperties
 import java.io.Serializable
 import java.util.*
 
 @Entity(tableName = "Stats")
+@IgnoreExtraProperties
 class Stats : Serializable {
 
     @PrimaryKey(autoGenerate = false)
