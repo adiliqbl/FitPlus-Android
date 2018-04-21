@@ -3,10 +3,12 @@ package app.fitplus.health.ui.fragments;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -79,8 +81,13 @@ class AddGoalFragment extends BottomSheetDialog implements BottomSheetDialog.OnD
     private void onAddClick() {
         if (goal.getText().toString().equals("")) return;
 
-        callback.onGoalAdded(goal.getText().toString().replaceAll("[^\\d.]", ""));
-        dismiss();
+        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(goal.getWindowToken(), 0);
+
+        new Handler().postDelayed(() -> {
+            callback.onGoalAdded(goal.getText().toString().replaceAll("[^\\d.]", ""));
+            dismiss();
+        }, 150);
     }
 
     @Override

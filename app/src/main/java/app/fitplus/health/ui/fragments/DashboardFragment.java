@@ -148,13 +148,15 @@ public class DashboardFragment extends Fragment implements ClearMemory {
                 mInterstitialAd.setAdListener(new AdListener() {
                     @Override
                     public void onAdClosed() {
-                        startActivity(new Intent(getActivity(), TrackingActivity.class));
+                        startActivity(new Intent(getActivity(), TrackingActivity.class)
+                                .putExtra("dataProvider", dataProvider));
                         mInterstitialAd.loadAd(new AdRequest.Builder().build());
                     }
 
                 });
             } else {
-                startActivity(new Intent(getActivity(), TrackingActivity.class));
+                startActivity(new Intent(getActivity(), TrackingActivity.class)
+                        .putExtra("dataProvider", dataProvider));
                 mInterstitialAd.loadAd(new AdRequest.Builder().build());
             }
         }

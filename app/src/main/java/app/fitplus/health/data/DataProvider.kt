@@ -11,8 +11,9 @@ import app.fitplus.health.system.component.CustomToast
 import app.fitplus.health.ui.MainActivity
 import app.fitplus.health.ui.MainActivity.REFRESH_DATA
 import timber.log.Timber
+import java.io.Serializable
 
-class DataProvider {
+class DataProvider : Serializable {
     var user: User? = null
     var stats: Stats? = null
     var goals: Goals? = null

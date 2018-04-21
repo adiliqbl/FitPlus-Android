@@ -14,7 +14,6 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import org.jetbrains.annotations.Contract;
 
-import app.fitplus.health.data.FirebaseStorage;
 import app.fitplus.health.system.receiver.ConnectionReceiver;
 import app.fitplus.health.ui.AppLaunch;
 import io.fabric.sdk.android.Fabric;
@@ -69,8 +68,6 @@ public class Application extends android.app.Application {
     }
 
     public void Logout(Activity activity) {
-        FirebaseStorage.deleteDB(activity);
-
         AuthUI.getInstance()
                 .signOut(activity)
                 .addOnCompleteListener(task -> {

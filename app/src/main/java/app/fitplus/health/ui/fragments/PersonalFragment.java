@@ -248,6 +248,12 @@ public class PersonalFragment extends Fragment implements ClearMemory {
 
             final int sess = Integer.valueOf(sessionLength.getText().toString());
 
+            if (sess < 5) {
+                new CustomToast(getActivity(), getActivity(), "Minimum session length is 5 minutes")
+                        .show();
+                return true;
+            }
+
             boolean add = false;
             if (dataProvider.getUser() == null) {
                 dataProvider.setUser(new User());

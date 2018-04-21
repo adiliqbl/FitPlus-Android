@@ -47,8 +47,7 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.concurrent.TimeUnit;
 
 import app.fitplus.health.R;
-import app.fitplus.health.data.FirebaseStorage;
-import app.fitplus.health.data.model.Stats;
+import app.fitplus.health.data.DataProvider;
 import app.fitplus.health.system.ClearMemory;
 import app.fitplus.health.system.events.PedometerEvent;
 import app.fitplus.health.system.service.PedoMeterService;
@@ -63,7 +62,7 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
         OnSuccessListener<Location>, ClearMemory {
 
     private int STARTED = 0;
-    private static final int TOTAL_TIME = 20;
+    private int TOTAL_TIME = 20;
 
     @BindView(R.id.timer)
     TextView timer;
@@ -83,6 +82,8 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
     private Hourglass clock;
     private CaloryCalculator calculate;
 
+    private DataProvider dataProvider;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,6 +95,11 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
         mapFragment.getMapAsync(this);
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        dataProvider = (DataProvider) getIntent().getSerializableExtra("dataProvider");
+        if (dataProvider.getUser() != null && dataProvider.getUser().getSessionLength() > 5) {
+            TOTAL_TIME = dataProvider.getUser().getSessionLength();
+        }
     }
 
     void setMapGestures() {
@@ -418,11 +424,10 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
     }
 
     private void saveTrackData() {
-        Stats stats = FirebaseStorage.getProgress(this);
-        if (stats == null) stats = new Stats();
-        stats.setCalorieBurned(stats.getCalorieBurned() + ((Double) calorieBurnCount).intValue());
-        stats.setSteps(stats.getSteps() + stepCount);
-        FirebaseStorage.saveProgress(this, stats);
+//        Stats stats = FirebaseStorage.getProgress(this);
+//        if (stats == null) stats = new Stats();
+//        stats.setCalorieBurned(stats.getCalorieBurned() + ((Double) calorieBurnCount).intValue());
+//        stats.setSteps(stats.getSteps() + stepCount);
     }
 
     boolean isMyServiceRunning(Class<?> serviceClass) {

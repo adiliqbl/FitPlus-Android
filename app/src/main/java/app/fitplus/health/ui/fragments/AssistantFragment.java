@@ -98,7 +98,7 @@ public class AssistantFragment extends BottomSheetDialog implements SpeechDelega
             rxPermissions
                     .request(Manifest.permission.RECORD_AUDIO)
                     .subscribe(granted -> {
-                        if (granted) { // Always true pre-M
+                        if (granted) {
                             startListening();
                         } else {
                             Toast.makeText(activity.get(), "Permission is required", Toast.LENGTH_LONG).show();
