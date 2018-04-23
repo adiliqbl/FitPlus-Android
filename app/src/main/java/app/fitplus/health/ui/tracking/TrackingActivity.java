@@ -8,6 +8,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -59,10 +63,11 @@ import butterknife.OnClick;
 import timber.log.Timber;
 
 public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyCallback,
-        OnSuccessListener<Location>, ClearMemory {
+        OnSuccessListener<Location>, ClearMemory, SensorEventListener {
 
     private int STARTED = 0;
     private int TOTAL_TIME = 20;
+    private int WEIGHT = 90;
 
     @BindView(R.id.timer)
     TextView timer;
@@ -76,6 +81,7 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
     private int stepCount = 0;
     private double calorieBurnCount = 0;
     private int distanceCount = 0;
+    private boolean running = false;
 
     private GoogleMap mMap;
     private FusedLocationProviderClient fusedLocationClient = null;
@@ -83,6 +89,8 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
     private CaloryCalculator calculate;
 
     private DataProvider dataProvider;
+    private SensorManager sensorManager;
+    private Sensor countSensor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +108,8 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
         if (dataProvider.getUser() != null && dataProvider.getUser().getSessionLength() > 5) {
             TOTAL_TIME = dataProvider.getUser().getSessionLength();
         }
+
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
     }
 
     void setMapGestures() {
@@ -165,6 +175,14 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
     protected void onResume() {
         super.onResume();
 
+        running = true;
+        countSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+        if (countSensor != null) {
+            sensorManager.registerListener(this, countSensor, SensorManager.SENSOR_DELAY_UI);
+        } else {
+            Toast.makeText(this, "Sensor not found", Toast.LENGTH_SHORT).show();
+        }
+
         EventBus.getDefault().register(this);
     }
 
@@ -173,6 +191,8 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
         EventBus.getDefault().unregister(this);
 
         super.onPause();
+        running = false;
+        sensorManager.unregisterListener(this, countSensor);
     }
 
     @Override
@@ -354,6 +374,7 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
         switch (STARTED) {
             case 0: // Started
 
+                running = true;
                 startPedometerService();
 
                 // Start timer
@@ -382,12 +403,14 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
                 STARTED = 1;
                 break;
             case 1: // Paused
+                running = false;
                 AnimUtil.setChangeText(findViewById(R.id.tracking_layout));
                 ((Button) findViewById(R.id.start_activity)).setText("Resume");
                 clock.pauseTimer();
                 STARTED = 2;
                 break;
             case 2: // Resumed
+                running = true;
                 AnimUtil.setChangeText(findViewById(R.id.tracking_layout));
                 ((Button) findViewById(R.id.start_activity)).setText("Pause");
                 clock.resumeTimer();
@@ -459,5 +482,32 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
         calorie.setText(String.valueOf(calculate.steptocal(event.getSteps(), 0)));
 
         EventBus.getDefault().removeStickyEvent(event);
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (running) {
+            steps.setText(String.valueOf(event.values[0]));
+            distance.setText(String.valueOf(getDistanceRun(event.values[0])));
+            calorie.setText(String.valueOf(getCaloriesBurnt(event.values[0])));
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+
+    // Calculate distance from Steps
+    public float getDistanceRun(float steps) {
+        float distance = (steps*78)/(float)100000;
+        return distance;
+    }
+
+    // Calculate Calories from Steps
+    public float getCaloriesBurnt(float steps) {
+        float stepsPerMile = (float) (1.6 / getDistanceRun(steps)) * steps;
+        float calories = (float) (stepsPerMile / (WEIGHT * 1.2565));
+        return calories;
     }
 }
