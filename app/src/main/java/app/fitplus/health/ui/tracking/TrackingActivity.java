@@ -62,6 +62,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import timber.log.Timber;
 
+import static app.fitplus.health.util.Constants.SERVICE.PEDOMETER_START;
+
 public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyCallback,
         OnSuccessListener<Location>, ClearMemory, SensorEventListener {
 
@@ -89,6 +91,7 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
     private CaloryCalculator calculate;
 
     private DataProvider dataProvider;
+
     private SensorManager sensorManager;
     private Sensor countSensor;
 
@@ -462,6 +465,7 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
 
     void startPedometerService() {
         Intent intent = new Intent(this, PedoMeterService.class);
+        intent.setAction(PEDOMETER_START);
         startService(intent);
     }
 
@@ -500,14 +504,12 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
 
     // Calculate distance from Steps
     public float getDistanceRun(float steps) {
-        float distance = (steps*78)/(float)100000;
-        return distance;
+        return (steps * 78) / (float) 100000;
     }
 
     // Calculate Calories from Steps
     public float getCaloriesBurnt(float steps) {
         float stepsPerMile = (float) (1.6 / getDistanceRun(steps)) * steps;
-        float calories = (float) (stepsPerMile / (WEIGHT * 1.2565));
-        return calories;
+        return (float) (stepsPerMile / (WEIGHT * 1.2565));
     }
 }
