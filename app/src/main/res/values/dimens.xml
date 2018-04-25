@@ -36,4 +36,5 @@
 
     <!--Components-->
     <dimen name="button_large_height">60dp</dimen>
+    <dimen name="nutrient_portrait_height">350dp</dimen>
 </resources>

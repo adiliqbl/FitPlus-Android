@@ -114,7 +114,7 @@ public class PedoMeterService extends Service implements SensorEventListener, St
     @Override
     public void step(long timeNs) {
         numSteps++;
-        EventBus.getDefault().postSticky(new PedometerEvent(numSteps));
+        EventBus.getDefault().post(new PedometerEvent(numSteps));
     }
 
     @Override

@@ -54,6 +54,7 @@ import app.fitplus.health.R;
 import app.fitplus.health.data.DataProvider;
 import app.fitplus.health.system.ClearMemory;
 import app.fitplus.health.system.events.PedometerEvent;
+import app.fitplus.health.system.events.SessionEndEvent;
 import app.fitplus.health.system.service.PedoMeterService;
 import app.fitplus.health.system.service.Pedometer.CaloryCalculator;
 import app.fitplus.health.util.AnimUtil;
@@ -67,9 +68,9 @@ import static app.fitplus.health.util.Constants.SERVICE.PEDOMETER_START;
 public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyCallback,
         OnSuccessListener<Location>, ClearMemory, SensorEventListener {
 
-    private int STARTED = 0;
+    private int ACTIVITY_STATUS = 0;
     private int TOTAL_TIME = 20;
-    private int WEIGHT = 90;
+    private int WEIGHT = 0;
 
     @BindView(R.id.timer)
     TextView timer;
@@ -95,6 +96,7 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
     private SensorManager sensorManager;
     private Sensor countSensor;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,9 +109,15 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
+        // Reset
+        calorie.setText("0 calorie");
+        steps.setText("0 steps");
+        distance.setText("0 km");
+
         dataProvider = (DataProvider) getIntent().getSerializableExtra("dataProvider");
         if (dataProvider.getUser() != null && dataProvider.getUser().getSessionLength() > 5) {
             TOTAL_TIME = dataProvider.getUser().getSessionLength();
+            WEIGHT = dataProvider.getUser().getWeight();
         }
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -346,7 +354,7 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
 
     @Override
     public void onBackPressed() {
-        if (STARTED != 0) {
+        if (ACTIVITY_STATUS != 0) {
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
             alertDialogBuilder
@@ -374,7 +382,7 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
             return;
         }
 
-        switch (STARTED) {
+        switch (ACTIVITY_STATUS) {
             case 0: // Started
 
                 running = true;
@@ -403,28 +411,28 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
 
                 ((TextView) findViewById(R.id.total_time)).setText(TOTAL_TIME + " MIN");
                 ((FloatingActionButton) findViewById(R.id.stop)).setImageResource(R.drawable.ic_stop_black_24dp);
-                STARTED = 1;
+                ACTIVITY_STATUS = 1;
                 break;
             case 1: // Paused
                 running = false;
                 AnimUtil.setChangeText(findViewById(R.id.tracking_layout));
                 ((Button) findViewById(R.id.start_activity)).setText("Resume");
                 clock.pauseTimer();
-                STARTED = 2;
+                ACTIVITY_STATUS = 2;
                 break;
             case 2: // Resumed
                 running = true;
                 AnimUtil.setChangeText(findViewById(R.id.tracking_layout));
                 ((Button) findViewById(R.id.start_activity)).setText("Pause");
                 clock.resumeTimer();
-                STARTED = 1;
+                ACTIVITY_STATUS = 1;
                 break;
         }
     }
 
     @OnClick(R.id.stop)
     public void onStopPressed() {
-        if (STARTED == 0) {
+        if (ACTIVITY_STATUS == 0) {
             finish();
             return;
         }
@@ -434,7 +442,7 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
 
     @SuppressLint("SetTextI18n")
     private void stop() {
-        STARTED = 0;
+        ACTIVITY_STATUS = 0;
 
         saveTrackData();
 
@@ -476,7 +484,7 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
     }
 
     @SuppressLint("SetTextI18n")
-    @Subscribe(sticky = true)
+    @Subscribe
     public void onEvent(PedometerEvent event) {
         stepCount += event.getSteps();
         calorieBurnCount = calculate.steptocal(event.getSteps(), 0);
@@ -484,6 +492,11 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
         double dist = event.getSteps() * 0.001;
         distance.setText(String.valueOf(dist) + " km");
         calorie.setText(String.valueOf(calculate.steptocal(event.getSteps(), 0)));
+    }
+
+    @Subscribe(sticky = true)
+    public void onEvent(SessionEndEvent event) {
+        findViewById(R.id.stop).performClick();
 
         EventBus.getDefault().removeStickyEvent(event);
     }
@@ -491,9 +504,9 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (running) {
-            steps.setText(String.valueOf(event.values[0]));
-            distance.setText(String.valueOf(getDistanceRun(event.values[0])));
-            calorie.setText(String.valueOf(getCaloriesBurnt(event.values[0])));
+            steps.setText(String.format("%s steps", String.valueOf(event.values[0])));
+            distance.setText(String.format("%s km", String.valueOf(getDistanceRun(event.values[0]))));
+            calorie.setText(String.format("%s calories", String.valueOf(Float.floatToIntBits(getCaloriesBurnt(event.values[0])))));
         }
     }
 

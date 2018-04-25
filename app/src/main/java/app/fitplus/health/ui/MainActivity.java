@@ -204,11 +204,11 @@ public class MainActivity extends RxAppCompatActivity implements BottomNavigatio
                 return true;
             case R.id.navigation_explore:
                 hideShowFragment(exploreFragment);
+                exploreFragment.onViewShown();
                 DASHBOARD_FRAGMENT = false;
                 return true;
             case R.id.navigation_personal:
                 hideShowFragment(personalFragment);
-                active = personalFragment;
                 DASHBOARD_FRAGMENT = false;
                 return true;
             case R.id.navigation_assistant:

@@ -18,4 +18,8 @@ public class FirebaseStorage {
     public static DatabaseReference statsReference() {
         return FirebaseDatabase.getInstance().getReference("stats").child(getUser().getUid());
     }
+
+    public static DatabaseReference nutrientsReference() {
+        return FirebaseDatabase.getInstance().getReference("/nutrients");
+    }
 }

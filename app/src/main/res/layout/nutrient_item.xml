@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/nutrient_portrait_height">
+
+    <ImageView
+        android:id="@+id/food_image"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/nutrient_portrait_height"
+        android:scaleType="centerCrop"
+        android:src="@drawable/gray_gradient"
+        tools:ignore="ContentDescription" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/nutrient_portrait_height"
+        android:background="@drawable/gray_gradient"
+        app:layout_constraintBottom_toBottomOf="@id/food_image"
+        app:layout_constraintLeft_toLeftOf="@id/food_image"
+        app:layout_constraintRight_toRightOf="@id/food_image"
+        app:layout_constraintTop_toTopOf="@id/food_image" />
+
+    <TextView
+        android:id="@+id/food_name"
+        style="@style/Text.Light"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/padding_normal"
+        android:layout_marginStart="@dimen/padding_normal"
+        android:textColor="@color/white"
+        android:textSize="28sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="@id/food_image" />
+
+    <TextView
+        android:id="@+id/food_calories"
+        style="@style/Text.Large"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/padding_normal"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@id/calories_label"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <TextView
+        android:id="@+id/calories_label"
+        style="@style/Text.Light"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/padding_normal"
+        android:text="@string/placeholder_calories"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="@id/food_calories" />
+</android.support.constraint.ConstraintLayout>

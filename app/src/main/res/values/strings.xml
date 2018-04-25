@@ -33,4 +33,5 @@
     <!-- Placeholders -->
     <string name="placeholder_session_length">minutes session length</string>
     <string name="placeholder_weight">kg weight</string>
+    <string name="placeholder_calories">Calories</string>
 </resources>

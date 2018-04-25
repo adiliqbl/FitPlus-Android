@@ -65,6 +65,7 @@ public class DashboardFragment extends Fragment implements ClearMemory {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
         unbinder = ButterKnife.bind(this, view);
+        setRetainInstance(true);
         return view;
     }
 

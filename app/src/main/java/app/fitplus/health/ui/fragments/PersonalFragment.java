@@ -72,6 +72,7 @@ public class PersonalFragment extends Fragment implements ClearMemory {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_personal, container, false);
         unbinder = ButterKnife.bind(this, view);
+        setRetainInstance(true);
         return view;
     }
 
