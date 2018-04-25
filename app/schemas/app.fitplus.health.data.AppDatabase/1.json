@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "0db2b18eac6d26023e22756b3d7b0e96",
+    "identityHash": "0dbbfe5019bba81148d608443f3495a6",
     "entities": [
       {
         "tableName": "User",
@@ -76,7 +76,7 @@
       },
       {
         "tableName": "Stats",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`userId` TEXT NOT NULL, `calorieBurned` INTEGER NOT NULL, `distance` INTEGER NOT NULL, `steps` INTEGER NOT NULL, `time` INTEGER, PRIMARY KEY(`userId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`userId` TEXT NOT NULL, `calorieBurned` REAL NOT NULL, `distance` REAL NOT NULL, `steps` REAL NOT NULL, `time` INTEGER, PRIMARY KEY(`userId`))",
         "fields": [
           {
             "fieldPath": "userId",
@@ -87,19 +87,19 @@
           {
             "fieldPath": "calorieBurned",
             "columnName": "calorieBurned",
-            "affinity": "INTEGER",
+            "affinity": "REAL",
             "notNull": true
           },
           {
             "fieldPath": "distance",
             "columnName": "distance",
-            "affinity": "INTEGER",
+            "affinity": "REAL",
             "notNull": true
           },
           {
             "fieldPath": "steps",
             "columnName": "steps",
-            "affinity": "INTEGER",
+            "affinity": "REAL",
             "notNull": true
           },
           {
@@ -121,7 +121,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"0db2b18eac6d26023e22756b3d7b0e96\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"0dbbfe5019bba81148d608443f3495a6\")"
     ]
   }
 }

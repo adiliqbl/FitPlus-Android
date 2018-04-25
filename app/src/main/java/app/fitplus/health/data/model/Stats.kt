@@ -13,8 +13,8 @@ class Stats : Serializable {
     @PrimaryKey(autoGenerate = false)
     lateinit var userId: String
 
-    var calorieBurned = 0
-    var distance = 0
-    var steps = 0
+    var calorieBurned: Float = 0f
+    var distance: Float = 0f
+    var steps: Float = 0f
     var time: Date? = null
 }

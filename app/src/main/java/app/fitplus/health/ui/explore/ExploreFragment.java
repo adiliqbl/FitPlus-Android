@@ -1,4 +1,4 @@
-package app.fitplus.health.ui.fragments;
+package app.fitplus.health.ui.explore;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -20,8 +20,6 @@ import java.util.List;
 
 import app.fitplus.health.R;
 import app.fitplus.health.data.model.Nutrient;
-import app.fitplus.health.ui.explore.NutrientClickListener;
-import app.fitplus.health.ui.explore.NutrientListAdapter;
 
 import static app.fitplus.health.data.FirebaseStorage.nutrientsReference;
 
@@ -68,7 +66,10 @@ public class ExploreFragment extends Fragment {
         rv.setAdapter(adapter);
 
         rv.addOnItemTouchListener(new NutrientClickListener(this.getContext(), (view1, position) -> {
-            // TODO : Open dialog
+            if (isAdded()) {
+                NutrientDetails nutrientDetails = NutrientDetails.newInstance(food.get(position));
+                nutrientDetails.show(getActivity().getFragmentManager(), "details");
+            }
         }, rv));
     }
 

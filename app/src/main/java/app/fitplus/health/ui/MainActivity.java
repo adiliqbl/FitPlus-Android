@@ -27,7 +27,7 @@ import app.fitplus.health.system.Application;
 import app.fitplus.health.system.ClearMemory;
 import app.fitplus.health.ui.fragments.AssistantFragment;
 import app.fitplus.health.ui.fragments.DashboardFragment;
-import app.fitplus.health.ui.fragments.ExploreFragment;
+import app.fitplus.health.ui.explore.ExploreFragment;
 import app.fitplus.health.ui.fragments.PersonalFragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;

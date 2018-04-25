@@ -1,3 +1,3 @@
 package app.fitplus.health.system.events
 
-class SessionEndEvent
+class SessionEndEvent(val totalSteps: Float)

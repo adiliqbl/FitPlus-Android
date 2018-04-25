@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:paddingBottom="@dimen/padding_medium">
+
+        <View
+            android:id="@+id/top_bg"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentTop="true"
+            android:background="@color/colorAccent" />
+
+        <TextView
+            android:id="@+id/food_name"
+            style="@style/Text.Medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/top_bg"
+            android:layout_alignTop="@id/top_bg"
+            android:layout_marginStart="@dimen/padding_medium"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_large"
+            app:layout_constraintBottom_toBottomOf="@id/top_bg"
+            app:layout_constraintLeft_toLeftOf="@id/top_bg"
+            app:layout_constraintTop_toTopOf="@id/top_bg" />
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/top_bg"
+            android:layout_margin="@dimen/padding_medium">
+
+            <TableRow
+                android:layout_marginTop="@dimen/padding_small"
+                android:weightSum="2">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/calcium"
+                    android:textSize="@dimen/table_font_size" />
+
+                <TextView
+                    android:id="@+id/calcium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/table_font_size" />
+            </TableRow>
+
+            <TableRow
+                android:layout_marginTop="@dimen/padding_small"
+                android:weightSum="2">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/calories"
+                    android:textSize="@dimen/table_font_size" />
+
+                <TextView
+                    android:id="@+id/calories"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/table_font_size" />
+            </TableRow>
+
+            <TableRow
+                android:layout_marginTop="@dimen/padding_small"
+                android:weightSum="2">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/carbs"
+                    android:textSize="@dimen/table_font_size" />
+
+                <TextView
+                    android:id="@+id/carbs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/table_font_size" />
+            </TableRow>
+
+            <TableRow
+                android:layout_marginTop="@dimen/padding_small"
+                android:weightSum="2">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/cholesterol"
+                    android:textSize="@dimen/table_font_size" />
+
+                <TextView
+                    android:id="@+id/cholesterol"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/table_font_size" />
+            </TableRow>
+
+            <TableRow
+                android:layout_marginTop="@dimen/padding_small"
+                android:weightSum="2">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/fibre"
+                    android:textSize="@dimen/table_font_size" />
+
+                <TextView
+                    android:id="@+id/fibre"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/table_font_size" />
+            </TableRow>
+
+            <TableRow
+                android:layout_marginTop="@dimen/padding_small"
+                android:weightSum="2">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/iron"
+                    android:textSize="@dimen/table_font_size" />
+
+                <TextView
+                    android:id="@+id/iron"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/table_font_size" />
+            </TableRow>
+
+            <TableRow
+                android:layout_marginTop="@dimen/padding_small"
+                android:weightSum="2">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/polysaturated"
+                    android:textSize="@dimen/table_font_size" />
+
+                <TextView
+                    android:id="@+id/polysaturated"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/table_font_size" />
+            </TableRow>
+
+            <TableRow
+                android:layout_marginTop="@dimen/padding_small"
+                android:weightSum="2">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/potassium"
+                    android:textSize="@dimen/table_font_size" />
+
+                <TextView
+                    android:id="@+id/potassium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/table_font_size" />
+            </TableRow>
+
+            <TableRow
+                android:layout_marginTop="@dimen/padding_small"
+                android:weightSum="2">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/protein"
+                    android:textSize="@dimen/table_font_size" />
+
+                <TextView
+                    android:id="@+id/protein"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/table_font_size" />
+            </TableRow>
+
+            <TableRow
+                android:layout_marginTop="@dimen/padding_small"
+                android:weightSum="2">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/saturated"
+                    android:textSize="@dimen/table_font_size" />
+
+                <TextView
+                    android:id="@+id/saturated"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/table_font_size" />
+            </TableRow>
+
+            <TableRow
+                android:layout_marginTop="@dimen/padding_small"
+                android:weightSum="2">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/sodium"
+                    android:textSize="@dimen/table_font_size" />
+
+                <TextView
+                    android:id="@+id/sodium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/table_font_size" />
+            </TableRow>
+
+            <TableRow
+                android:layout_marginTop="@dimen/padding_small"
+                android:weightSum="2">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/fat"
+                    android:textSize="@dimen/table_font_size" />
+
+                <TextView
+                    android:id="@+id/fat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/table_font_size" />
+            </TableRow>
+
+            <TableRow
+                android:layout_marginTop="@dimen/padding_small"
+                android:weightSum="2">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/vitamina"
+                    android:textSize="@dimen/table_font_size" />
+
+                <TextView
+                    android:id="@+id/vitamina"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/table_font_size" />
+            </TableRow>
+
+            <TableRow
+                android:layout_marginTop="@dimen/padding_small"
+                android:weightSum="2">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/vitaminc"
+                    android:textSize="@dimen/table_font_size" />
+
+                <TextView
+                    android:id="@+id/vitaminc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/table_font_size" />
+            </TableRow>
+        </TableLayout>
+    </RelativeLayout>
+</ScrollView>

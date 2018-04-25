@@ -34,4 +34,20 @@
     <string name="placeholder_session_length">minutes session length</string>
     <string name="placeholder_weight">kg weight</string>
     <string name="placeholder_calories">Calories</string>
+
+    <!-- Nutrients -->
+    <string name="calcium">Calcium</string>
+    <string name="calories">Calories</string>
+    <string name="carbs">Carbohydrates</string>
+    <string name="cholesterol">Cholesterol</string>
+    <string name="fibre">Dietary Fiber</string>
+    <string name="iron">Iron</string>
+    <string name="polysaturated">Polysaturated</string>
+    <string name="potassium">Potassium</string>
+    <string name="protein">Protein</string>
+    <string name="saturated">Saturated</string>
+    <string name="sodium">Sodium</string>
+    <string name="fat">Fat</string>
+    <string name="vitamina">Vitamin A</string>
+    <string name="vitaminc">Vitamin C</string>
 </resources>

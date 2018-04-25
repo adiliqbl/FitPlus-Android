@@ -12,12 +12,11 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import app.fitplus.health.R;
 import app.fitplus.health.data.model.Nutrient;
-import app.fitplus.health.ui.fragments.ExploreFragment;
+
+import static app.fitplus.health.util.Util.capitalize;
 
 public class NutrientListAdapter extends RecyclerView.Adapter<NutrientListAdapter.ViewHolder> {
 
@@ -68,17 +67,5 @@ public class NutrientListAdapter extends RecyclerView.Adapter<NutrientListAdapte
             calories = v.findViewById(R.id.food_calories);
             image = v.findViewById(R.id.food_image);
         }
-    }
-
-    private String capitalize(String capString) {
-        if (capString == null) return null;
-
-        StringBuffer capBuffer = new StringBuffer();
-        Matcher capMatcher = Pattern.compile("([a-z])([a-z]*)", Pattern.CASE_INSENSITIVE).matcher(capString);
-        while (capMatcher.find()) {
-            capMatcher.appendReplacement(capBuffer, capMatcher.group(1).toUpperCase() + capMatcher.group(2).toLowerCase());
-        }
-
-        return capMatcher.appendTail(capBuffer).toString();
     }
 }
