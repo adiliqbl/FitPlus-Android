@@ -128,7 +128,7 @@ public class MainActivity extends RxAppCompatActivity implements BottomNavigatio
     protected void onResume() {
         super.onResume();
 
-        if (!DATA_LOADED) loadData();
+        if (!DATA_LOADED || REFRESH_DATA) loadData();
     }
 
     private void addHideFragment(Fragment fragment) {
