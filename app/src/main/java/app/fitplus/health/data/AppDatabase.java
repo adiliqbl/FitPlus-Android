@@ -5,6 +5,7 @@ import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import app.fitplus.health.data.dao.GoalsDao;
 import app.fitplus.health.data.dao.StatsDao;
@@ -36,5 +37,16 @@ public abstract class AppDatabase extends RoomDatabase {
             }
         }
         return INSTANCE;
+    }
+
+    public static void setSession(Context context, final boolean status) {
+        SharedPreferences.Editor prefs = context.getSharedPreferences("data", Context.MODE_PRIVATE).edit();
+        prefs.putBoolean("status", status);
+        prefs.apply();
+    }
+
+    public static boolean getSession(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences("data", Context.MODE_PRIVATE);
+        return prefs.getBoolean("status", false);
     }
 }

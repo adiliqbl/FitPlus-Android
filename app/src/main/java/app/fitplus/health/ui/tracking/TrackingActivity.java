@@ -2,7 +2,6 @@ package app.fitplus.health.ui.tracking;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.ActivityManager;
 import android.content.ComponentCallbacks2;
 import android.content.ComponentName;
 import android.content.Context;
@@ -49,19 +48,24 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.Calendar;
 
 import app.fitplus.health.R;
+import app.fitplus.health.data.AppDatabase;
 import app.fitplus.health.data.DataProvider;
 import app.fitplus.health.data.model.Stats;
 import app.fitplus.health.system.ClearMemory;
 import app.fitplus.health.system.component.CustomToast;
 import app.fitplus.health.system.events.NoSensorEvent;
 import app.fitplus.health.system.events.SessionEndEvent;
-import app.fitplus.health.system.service.PedometerService;
+import app.fitplus.health.system.pedometer.PedometerService;
 import app.fitplus.health.util.Util;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
+import static app.fitplus.health.system.Application.getUser;
 import static app.fitplus.health.util.Constants.SERVICE.PEDOMETER_START;
 
 public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyCallback,
@@ -90,7 +94,7 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
     private DataProvider dataProvider;
     private PedometerService pedometerService;
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint({"SetTextI18n", "CheckResult"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,14 +107,42 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
-        // Reset
-        calorie.setText("0 calorie");
-        steps.setText("0 steps");
-        distance.setText("0 km");
+        resetViews();
 
-        dataProvider = (DataProvider) getIntent().getSerializableExtra("dataProvider");
-        if (dataProvider.getUser() != null && dataProvider.getUser().getSessionLength() > 5) {
-            TOTAL_TIME = dataProvider.getUser().getSessionLength();
+        if (getIntent() != null || (getIntent().hasExtra("dataProvider")
+                && getIntent().getSerializableExtra("dataProvider") != null)) {
+            dataProvider = (DataProvider) getIntent().getSerializableExtra("dataProvider");
+            getValues();
+        } else loadData();
+
+        Observable.fromCallable(() -> AppDatabase.getSession(this))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(bindToLifecycle())
+                .subscribe(s -> {
+                    if (s) {
+                        ACTIVITY_STATUS = 1;
+                        startOrPause();
+                    }
+                });
+    }
+
+    @SuppressLint("CheckResult")
+    void loadData() {
+        io.reactivex.Observable.fromCallable(() -> AppDatabase.getInstance(this)
+                .userDao().getUserById(getUser().getUid())).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(s -> {
+                    dataProvider = new DataProvider();
+                    dataProvider.setUser(s);
+                    getValues();
+                }, Timber::e);
+    }
+
+    private void getValues() {
+        if (dataProvider != null && dataProvider.getUser() != null) {
+            if (dataProvider.getUser().getSessionLength() > 5)
+                TOTAL_TIME = dataProvider.getUser().getSessionLength();
             WEIGHT = dataProvider.getUser().getWeight();
         }
     }
@@ -430,6 +462,8 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
                 ((TextView) findViewById(R.id.total_time)).setText(TOTAL_TIME + " MIN");
                 ((FloatingActionButton) findViewById(R.id.stop)).setImageResource(R.drawable.ic_stop_black_24dp);
                 ACTIVITY_STATUS = 1;
+
+                AppDatabase.setSession(this, true);
                 break;
             case 1: // Paused
                 Util.setChangeText(findViewById(R.id.tracking_layout));
@@ -478,6 +512,9 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
         ((Button) findViewById(R.id.start_activity)).setText("Start");
         findViewById(R.id.total_time).setVisibility(View.GONE);
         ((FloatingActionButton) findViewById(R.id.stop)).setImageResource(R.drawable.ic_close_black_24dp);
+
+        AppDatabase.setSession(this, false);
+        resetViews();
     }
 
     private void saveTrackData() {
@@ -485,13 +522,6 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
 //        if (stats == null) stats = new Stats();
 //        stats.setCalorieBurned(stats.getCalorieBurned() + ((Double) calorieBurnCount).intValue());
 //        stats.setSteps(stats.getSteps() + stepCount);
-    }
-
-    boolean isMyServiceRunning(Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE))
-            if (serviceClass.getName().equals(service.service.getClassName())) return true;
-        return false;
     }
 
     void startPedometerService() {
@@ -508,7 +538,7 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
     }
 
     void stopPedometerService() {
-        if (isMyServiceRunning(PedometerService.class)) {
+        if (Util.isMyServiceRunning(this, PedometerService.class)) {
             stopService(new Intent(this, PedometerService.class));
             mBound = false;
         }
@@ -574,5 +604,11 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
     public int getCaloriesBurnt(float steps) {
         float stepCount = (float) (1.6 / getDistanceRun(steps)) * steps;
         return Float.floatToIntBits((float) (stepCount / (WEIGHT * 1.2565)));
+    }
+
+    private void resetViews() {
+        calorie.setText("0 calorie");
+        steps.setText("0 steps");
+        distance.setText("0 km");
     }
 }

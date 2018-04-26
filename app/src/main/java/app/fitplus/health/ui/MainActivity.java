@@ -25,9 +25,9 @@ import app.fitplus.health.data.model.Stats;
 import app.fitplus.health.data.model.User;
 import app.fitplus.health.system.Application;
 import app.fitplus.health.system.ClearMemory;
+import app.fitplus.health.ui.explore.ExploreFragment;
 import app.fitplus.health.ui.fragments.AssistantFragment;
 import app.fitplus.health.ui.fragments.DashboardFragment;
-import app.fitplus.health.ui.explore.ExploreFragment;
 import app.fitplus.health.ui.fragments.PersonalFragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -58,6 +58,7 @@ public class MainActivity extends RxAppCompatActivity implements BottomNavigatio
     private ProgressDialog dialog;
     private FragmentManager mFragmentManager;
 
+    @SuppressLint("CheckResult")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +85,23 @@ public class MainActivity extends RxAppCompatActivity implements BottomNavigatio
                 Timber.tag("MapManager").i("Initializing map on launch"));
 
         MobileAds.initialize(this, "ca-app-pub-3251178974833355~6592011781");
+
+        Observable.fromCallable(() -> AppDatabase.getSession(this))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(bindToLifecycle())
+                .subscribe(s -> {
+                    if (s && dashboardFragment != null) {
+                        dashboardFragment.beginActivity();
+                    }
+                });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (FETCHED != 4) loadData();
     }
 
     private void addHideFragment(Fragment fragment) {
@@ -192,6 +210,8 @@ public class MainActivity extends RxAppCompatActivity implements BottomNavigatio
                 .subscribe(s -> {
                     if (dashboardFragment != null) dashboardFragment.onDataLoaded();
                     if (personalFragment != null) personalFragment.onDataLoaded();
+
+                    FETCHED = 4;
                 }, Timber::e);
     }
 

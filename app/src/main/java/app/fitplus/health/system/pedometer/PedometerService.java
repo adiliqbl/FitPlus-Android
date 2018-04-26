@@ -1,4 +1,4 @@
-package app.fitplus.health.system.service;
+package app.fitplus.health.system.pedometer;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
@@ -37,18 +37,21 @@ import static app.fitplus.health.util.Constants.SERVICE.PEDOMETER_CHANNEL_NAME;
 import static app.fitplus.health.util.Constants.SERVICE.PEDOMETER_CLICK;
 import static app.fitplus.health.util.Constants.SERVICE.PEDOMETER_START;
 
-public class PedometerService extends Service implements SensorEventListener {
+public class PedometerService extends Service implements SensorEventListener, StepListener {
 
-    private float numSteps;
-    private int TOTAL_TIME;
+    private float numSteps = 0;
+    private int TOTAL_TIME = 20;
 
     private final IBinder mBinder = new LocalBinder();
     private PedometerListener callback;
 
     private NotificationManager notificationManager;
+    private Notification.Builder notification;
 
+    private StepDetector stepDetector;
     private SensorManager sensorManager;
     private Sensor countSensor;
+    private Sensor accel;
 
     private Hourglass clock;
 
@@ -59,17 +62,29 @@ public class PedometerService extends Service implements SensorEventListener {
     public void onCreate() {
         super.onCreate();
 
+        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        countSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
-        if (countSensor != null) {
-            sensorManager.registerListener(this, countSensor, SensorManager.SENSOR_DELAY_UI);
+//        countSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+//        if (countSensor != null) {
+//            sensorManager.registerListener(this, countSensor, SensorManager.SENSOR_DELAY_UI);
+//        } else {
+//            EventBus.getDefault().postSticky(new NoSensorEvent());
+//
+//            stopSelf();
+//        }
+        accel = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        if (accel != null) {
+
+            sensorManager.registerListener(this, accel, SensorManager.SENSOR_DELAY_FASTEST);
         } else {
             EventBus.getDefault().postSticky(new NoSensorEvent());
 
             stopSelf();
         }
 
-        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        stepDetector = new StepDetector();
+        stepDetector.registerListener(this);
     }
 
     @Override
@@ -83,7 +98,7 @@ public class PedometerService extends Service implements SensorEventListener {
                 PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
                         notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-                Notification.Builder notification = buildNotification(pendingIntent);
+                notification = buildNotification(pendingIntent);
 
                 startForeground(100, notification.build());
             }
@@ -113,13 +128,25 @@ public class PedometerService extends Service implements SensorEventListener {
                 .setContentIntent(pendingIntent);
     }
 
+    private void notifyEnd() {
+        if (notificationManager == null || notification == null) return;
+
+        notification.setContentTitle("Session end");
+        notification.setContentText("Click here to return to app");
+        notificationManager.notify(100, notification.build());
+    }
+
     @Override
     public void onDestroy() {
         sensorManager.unregisterListener(this, countSensor);
 
         stopForeground(true);
+
         if (clock.isRunning()) clock.stopTimer();
         clock = null;
+
+        stepDetector = null;
+        sensorManager = null;
 
         super.onDestroy();
     }
@@ -144,19 +171,30 @@ public class PedometerService extends Service implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        numSteps = event.values[0];
-
-        if (callback != null) callback.onStep(numSteps);
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            stepDetector.updateAccel(
+                    event.timestamp, event.values[0], event.values[1], event.values[2]);
+        } else if (event.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
+            if (callback != null) callback.onStep(event.values[0]);
+        }
     }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
+    }
 
+    @Override
+    public void onStep(long timeNs) {
+        numSteps++;
+
+        if (callback != null) callback.onStep(numSteps);
     }
 
     public void startTimer(int TOTAL_TIME) {
-        // Start timer
-        this.TOTAL_TIME = TOTAL_TIME;
+        if (TOTAL_TIME == 0) this.TOTAL_TIME = 20;
+        else if (TOTAL_TIME < 5) this.TOTAL_TIME = 5;
+        else this.TOTAL_TIME = TOTAL_TIME;
+
         clock = new Hourglass(TimeUnit.MINUTES.toMillis(TOTAL_TIME)) {
             @SuppressLint("DefaultLocale")
             @Override
@@ -166,9 +204,10 @@ public class PedometerService extends Service implements SensorEventListener {
 
             @Override
             public void onTimerFinish() {
-                if (callback == null)
+                if (callback == null) {
                     EventBus.getDefault().postSticky(new SessionEndEvent(numSteps));
-                else callback.onSessionEnd(numSteps);
+                    notifyEnd();
+                } else callback.onSessionEnd(numSteps);
             }
         };
 

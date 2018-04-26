@@ -19,7 +19,7 @@
         android:theme="@style/AppTheme.Reverse">
 
         <service
-            android:name=".system.service.PedometerService"
+            android:name=".system.pedometer.PedometerService"
             android:enabled="true"
             android:exported="true" />
 
