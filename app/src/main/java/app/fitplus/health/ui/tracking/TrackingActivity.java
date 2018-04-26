@@ -11,6 +11,7 @@ import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
@@ -23,6 +24,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -50,12 +52,14 @@ import java.util.Calendar;
 import app.fitplus.health.R;
 import app.fitplus.health.data.AppDatabase;
 import app.fitplus.health.data.DataProvider;
+import app.fitplus.health.data.FirebaseStorage;
 import app.fitplus.health.data.model.Stats;
 import app.fitplus.health.system.ClearMemory;
 import app.fitplus.health.system.component.CustomToast;
 import app.fitplus.health.system.events.NoSensorEvent;
 import app.fitplus.health.system.events.SessionEndEvent;
 import app.fitplus.health.system.pedometer.PedometerService;
+import app.fitplus.health.ui.MainActivity;
 import app.fitplus.health.util.Util;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -71,10 +75,12 @@ import static app.fitplus.health.util.Constants.SERVICE.PEDOMETER_START;
 public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyCallback,
         OnSuccessListener<Location>, ClearMemory, PedometerService.PedometerListener {
 
+    private static final int REQUEST_INVITE = 2;
+
     private int ACTIVITY_STATUS = 0;
     private int PERFORM_ACTION_STATUS = 0;
     private int TOTAL_TIME = 20;
-    private int WEIGHT = 0;
+    private int WEIGHT = 60;
     private boolean mBound = false;
 
     @BindView(R.id.timer)
@@ -109,7 +115,7 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
 
         resetViews();
 
-        if (getIntent() != null || (getIntent().hasExtra("dataProvider")
+        if (getIntent() != null && (getIntent().hasExtra("dataProvider")
                 && getIntent().getSerializableExtra("dataProvider") != null)) {
             dataProvider = (DataProvider) getIntent().getSerializableExtra("dataProvider");
             getValues();
@@ -121,8 +127,8 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
                 .compose(bindToLifecycle())
                 .subscribe(s -> {
                     if (s) {
-                        ACTIVITY_STATUS = 1;
-                        startOrPause();
+                        PERFORM_ACTION_STATUS = 6;
+                        startPedometerService();
                     }
                 });
     }
@@ -188,6 +194,23 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_INVITE) {
+            if (resultCode == RESULT_OK) {
+                // Get the invitation IDs of all sent messages
+                // String[] ids = AppInviteInvitation.getInvitationIds(resultCode, data);
+                // for (String id : ids)
+                new CustomToast(this, this, "Invitation sent").show();
+            } else {
+                new CustomToast(this, this, "Couldn't send invitation").show();
+            }
+        }
+    }
+
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
@@ -250,6 +273,7 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
      */
     private ServiceConnection serviceConnection = new ServiceConnection() {
 
+        @SuppressLint("SetTextI18n")
         @Override
         public void onServiceConnected(ComponentName className,
                                        IBinder service) {
@@ -269,6 +293,38 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
                     break;
                 case 4:
                     pedometerService.stopTimer();
+                    break;
+                case 5:
+                    calculateAndFillViews(pedometerService.getSteps());
+                    break;
+                case 6:
+                    Timber.d("Getting data from service");
+                    ACTIVITY_STATUS = pedometerService.getActivityStatus();
+                    Timber.d("ActivityStatus from Service : " + String.valueOf(ACTIVITY_STATUS));
+                    switch (ACTIVITY_STATUS) {
+                        case 1:
+                            Util.setChangeText(findViewById(R.id.tracking_layout));
+                            ((Button) findViewById(R.id.start_activity)).setText("Pause");
+
+                            findViewById(R.id.total_time).setVisibility(View.VISIBLE);
+                            ((TextView) findViewById(R.id.total_time)).setText(TOTAL_TIME + " MIN");
+                            ((FloatingActionButton) findViewById(R.id.stop)).setImageResource(R.drawable.ic_stop_black_24dp);
+
+                            calculateAndFillViews(pedometerService.getSteps());
+                            break;
+                        case 2:
+                            Util.setChangeText(findViewById(R.id.tracking_layout));
+                            ((Button) findViewById(R.id.start_activity)).setText("Resume");
+
+                            findViewById(R.id.total_time).setVisibility(View.VISIBLE);
+                            ((TextView) findViewById(R.id.total_time)).setText(TOTAL_TIME + " MIN");
+                            ((FloatingActionButton) findViewById(R.id.stop)).setImageResource(R.drawable.ic_stop_black_24dp);
+
+                            calculateAndFillViews(pedometerService.getSteps());
+                            break;
+
+                    }
+                    calculateAndFillViews(pedometerService.getSteps());
                     break;
             }
 
@@ -427,14 +483,22 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
                     .setTitle("")
                     .setMessage("Are you sure you want to stop activity?")
                     .setCancelable(false)
-                    .setPositiveButton("Stop", (dialog, id) -> {
-                        saveTrackData();
-                        finish();
-                    })
+                    .setPositiveButton("Stop", (dialog, id) ->
+                            findViewById(R.id.stop).performClick())
                     .setNegativeButton("Cancel", (dialog, id) -> dialog.cancel());
             AlertDialog alertDialog = alertDialogBuilder.create();
             alertDialog.show();
         } else super.onBackPressed();
+    }
+
+    @OnClick(R.id.send_link)
+    public void sendLink() {
+        Intent intent = new AppInviteInvitation.IntentBuilder(getString(R.string.invitation_title))
+                .setMessage(getString(R.string.invitation_message))
+                .setDeepLink(Uri.parse(getString(R.string.invitation_deep_link)))
+                .setCallToActionText(getString(R.string.invitation_cta))
+                .build();
+        startActivityForResult(intent, REQUEST_INVITE);
     }
 
     @SuppressLint("SetTextI18n")
@@ -452,7 +516,9 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
             case 0: // Started
                 PERFORM_ACTION_STATUS = 1;
 
-                startPedometerService();
+                if (mBound) {
+                    pedometerService.startTimer(TOTAL_TIME);
+                } else startPedometerService();
 
                 findViewById(R.id.total_time).setVisibility(View.VISIBLE);
 
@@ -489,19 +555,21 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
     @OnClick(R.id.stop)
     public void onStopPressed() {
         if (ACTIVITY_STATUS == 0) {
+            stopPedometerService();
             finish();
             return;
         }
 
-        stop();
-        pedometerService.stopTimer();
+        if (mBound) pedometerService.stopTimer();
+        else PERFORM_ACTION_STATUS = 4;
     }
 
     @SuppressLint("SetTextI18n")
     private void stop() {
         ACTIVITY_STATUS = 0;
 
-        saveTrackData();
+        saveSession();
+        AppDatabase.setSession(this, false);
 
         stopPedometerService();
 
@@ -512,32 +580,46 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
         ((Button) findViewById(R.id.start_activity)).setText("Start");
         findViewById(R.id.total_time).setVisibility(View.GONE);
         ((FloatingActionButton) findViewById(R.id.stop)).setImageResource(R.drawable.ic_close_black_24dp);
-
-        AppDatabase.setSession(this, false);
-        resetViews();
     }
 
-    private void saveTrackData() {
-//        Stats stats = FirebaseStorage.getProgress(this);
-//        if (stats == null) stats = new Stats();
-//        stats.setCalorieBurned(stats.getCalorieBurned() + ((Double) calorieBurnCount).intValue());
-//        stats.setSteps(stats.getSteps() + stepCount);
+    private void saveSession() {
+        Observable.fromCallable(() -> {
+            FirebaseStorage.statsReference().setValue(stats);
+            AppDatabase.getInstance(this).statsDao().insert(stats);
+
+            MainActivity.REFRESH_DATA = true;
+            return true;
+        })
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(s -> finish(), Timber::e);
     }
 
     void startPedometerService() {
-        Intent intent = new Intent(this, PedometerService.class);
-        intent.setAction(PEDOMETER_START);
-        startService(intent);
+        if (Util.isMyServiceRunning(this, PedometerService.class)) {
+            if (!mBound) {
+                Timber.d("PedometerService already running");
+                PERFORM_ACTION_STATUS = 6;
+                bindToService();
+            }
+        } else {
+            Timber.d("PedometerService starting");
+            Intent intent = new Intent(this, PedometerService.class);
+            intent.setAction(PEDOMETER_START);
+            startService(intent);
 
-        bindToService();
+            bindToService();
+        }
     }
 
     void bindToService() {
+        Timber.d("Binding service");
         bindService(new Intent(this, PedometerService.class),
                 serviceConnection, Context.BIND_AUTO_CREATE);
     }
 
     void stopPedometerService() {
+        if (mBound) unbindService(serviceConnection);
         if (Util.isMyServiceRunning(this, PedometerService.class)) {
             stopService(new Intent(this, PedometerService.class));
             mBound = false;
@@ -550,11 +632,7 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
      */
     @Override
     public void onStep(float numSteps) {
-        if (ACTIVITY_STATUS == 1) {
-            steps.setText(String.format("%s \n steps", String.valueOf(numSteps)));
-            distance.setText(String.format("%s \n km", String.valueOf(getDistanceRun(numSteps))));
-            calorie.setText(String.format("%s \n calories", String.valueOf(getCaloriesBurnt(numSteps))));
-        }
+        calculateAndFillViews(numSteps);
     }
 
     @SuppressLint("DefaultLocale")
@@ -581,8 +659,9 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
         stats.setCalorieBurned(getCaloriesBurnt(steps));
         stats.setDistance(getDistanceRun(steps));
         stats.setTime(Calendar.getInstance().getTime());
+        stats.setUserId(getUser().getUid());
 
-        findViewById(R.id.stop).performClick();
+        stop();
     }
 
     @Subscribe(sticky = true)
@@ -591,19 +670,26 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
                 .show();
     }
 
+    private void calculateAndFillViews(final float numSteps) {
+        if (ACTIVITY_STATUS == 1) {
+            steps.setText(String.format("%s steps", String.valueOf(Math.round(numSteps))));
+            distance.setText(String.format("%s km", String.valueOf(getDistanceRun(numSteps))));
+            calorie.setText(String.format("%s calories", String.valueOf(getCaloriesBurnt(numSteps))));
+        }
+    }
 
     /**
      * Calculations
      */
     // Calculate distance from Steps
     public int getDistanceRun(float steps) {
-        return Float.floatToIntBits((steps * 78) / (float) 100000);
+        return Math.round((steps * 78) / (float) 100000);
     }
 
     // Calculate Calories from Steps
     public int getCaloriesBurnt(float steps) {
         float stepCount = (float) (1.6 / getDistanceRun(steps)) * steps;
-        return Float.floatToIntBits((float) (stepCount / (WEIGHT * 1.2565)));
+        return Math.round((float) (stepCount / (WEIGHT * 1.2565)));
     }
 
     private void resetViews() {

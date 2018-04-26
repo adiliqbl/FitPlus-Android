@@ -2,6 +2,8 @@ package app.fitplus.health.ui;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,9 +14,11 @@ import android.view.MenuItem;
 
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.firebase.appinvite.FirebaseAppInvite;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
 import app.fitplus.health.R;
@@ -29,6 +33,7 @@ import app.fitplus.health.ui.explore.ExploreFragment;
 import app.fitplus.health.ui.fragments.AssistantFragment;
 import app.fitplus.health.ui.fragments.DashboardFragment;
 import app.fitplus.health.ui.fragments.PersonalFragment;
+import app.fitplus.health.ui.tracking.TrackingActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.Observable;
@@ -95,6 +100,28 @@ public class MainActivity extends RxAppCompatActivity implements BottomNavigatio
                         dashboardFragment.beginActivity();
                     }
                 });
+
+        FirebaseDynamicLinks.getInstance().getDynamicLink(getIntent())
+                .addOnSuccessListener(this, data -> {
+                    if (data == null) {
+                        Timber.d("getInvitation: no data");
+                        return;
+                    }
+
+                    // Get the deep link
+                    Uri deepLink = data.getLink();
+
+                    // Extract invite
+                    FirebaseAppInvite invite = FirebaseAppInvite.getInvitation(data);
+                    if (invite != null) {
+                        String invitationId = invite.getInvitationId();
+                    }
+
+                    // TODO : Test this
+                    startActivity(new Intent(this, TrackingActivity.class));
+                })
+                .addOnFailureListener(this, e -> Timber.e("getDynamicLink:onFailure", e));
+
     }
 
     @Override

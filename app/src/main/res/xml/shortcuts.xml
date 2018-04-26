@@ -1,0 +1,14 @@
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/shortcut_start_activity"
+        android:shortcutId="Start activity"
+        android:shortcutLongLabel="@string/start_activity"
+        android:shortcutShortLabel="@string/start_activity">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="app.fitplus.health.ui.tracking.TrackingActivity"
+            android:targetPackage="app.fitplus.health" />
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+</shortcuts>

@@ -179,11 +179,11 @@ public class DashboardFragment extends Fragment implements ClearMemory {
 
         Stats stats = dataProvider.getStats();
         if (stats != null) {
-            calorieText.setText(String.format("%s calories burned", String.valueOf(stats.getCalorieBurned())));
-            stepsText.setText(String.format("%s steps taken", String.valueOf(stats.getSteps())));
+            calorieText.setText(String.format("%s calories burned", String.valueOf(Math.round(stats.getCalorieBurned()))));
+            stepsText.setText(String.format("%s steps taken", String.valueOf(Math.round(stats.getSteps()))));
         } else {
-            calorieText.setText(R.string.msg_no_activity);
-            stepsText.setText(R.string.msg_no_activity);
+            calorieText.setHint(R.string.msg_no_activity);
+            stepsText.setHint(R.string.msg_no_activity);
         }
     }
 

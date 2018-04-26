@@ -69,7 +69,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/opt/android-studio/plugins/android/lib/android.jar!/images/material_design_icons/image/ic_timer_black_24dp.xml" />
+                                      <entry key="url" value="jar:file:/opt/android-studio/plugins/android/lib/android.jar!/images/material_design_icons/maps/ic_directions_run_black_24dp.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -81,7 +81,7 @@
                           <map>
                             <entry key="autoMirrored" value="true" />
                             <entry key="height" value="18" />
-                            <entry key="outputName" value="ic_timer_black_24dp" />
+                            <entry key="outputName" value="shortcut_start_activity" />
                             <entry key="overrideSize" value="true" />
                             <entry key="sourceFile" value="$USER_HOME$/Downloads/running.svg" />
                             <entry key="width" value="18" />

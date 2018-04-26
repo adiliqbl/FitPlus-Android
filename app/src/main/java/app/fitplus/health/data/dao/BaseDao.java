@@ -13,7 +13,7 @@ import io.reactivex.schedulers.Schedulers;
 @Dao
 public abstract class BaseDao<T> {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract void insert(T entity);
+    public abstract void insert(T entity);
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     abstract void update(T entity);

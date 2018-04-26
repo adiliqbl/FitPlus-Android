@@ -2,6 +2,7 @@ package app.fitplus.health.ui;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -10,12 +11,15 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
+import com.google.firebase.appinvite.FirebaseAppInvite;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 
 import java.util.Arrays;
 
 import app.fitplus.health.R;
 import app.fitplus.health.system.Application;
+import app.fitplus.health.ui.tracking.TrackingActivity;
 import app.fitplus.health.ui.user.CompleteRegistration;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -30,6 +34,28 @@ public class AppLaunch extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_launch);
         ButterKnife.bind(this);
+
+        FirebaseDynamicLinks.getInstance().getDynamicLink(getIntent())
+                .addOnSuccessListener(this, data -> {
+                    if (data == null) {
+                        Timber.d("getInvitation: no data");
+                        return;
+                    }
+
+                    // Get the deep link
+                    Uri deepLink = data.getLink();
+
+                    // Extract invite
+                    FirebaseAppInvite invite = FirebaseAppInvite.getInvitation(data);
+                    if (invite != null) {
+                        String invitationId = invite.getInvitationId();
+                    }
+
+                    // TODO : Test this
+                    startActivity(new Intent(this, TrackingActivity.class));
+                    finish();
+                })
+                .addOnFailureListener(this, e -> Timber.e("getDynamicLink:onFailure", e));
 
         if (ContextCompat.checkSelfPermission(AppLaunch.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
             ActivityCompat.requestPermissions(AppLaunch.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 2);

@@ -8,6 +8,13 @@
     <string name="title_activity_maps">Tracking</string>
     <string name="fitplus_assistant">FitPlus Assistant</string>
 
+    <!--Invitation-->
+    <string name="send_link">Invite friends</string>
+    <string name="invitation_title">Track runs with FitPlus</string>
+    <string name="invitation_message">Get fit by tracking your runs using FitPlus activity tracking</string>
+    <string name="invitation_deep_link">https://kr224.app.goo.gl/tracking</string>
+    <string name="invitation_cta">START_TRACKING</string>
+
     <string name="first_and_last_name">First and last name</string>
     <string name="save">Save</string>
     <string name="sign_in">Sign in</string>
