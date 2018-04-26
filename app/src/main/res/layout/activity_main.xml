@@ -32,4 +32,27 @@
         android:background="@color/white"
         app:itemBackground="@color/colorPrimary"
         app:menu="@menu/navigation" />
+
+    <View
+        android:id="@+id/progress_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#aa000000"
+        android:clickable="true"
+        android:elevation="100dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:visibility="gone" />
+
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:elevation="110dp"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/white"
+        android:indeterminateTintMode="src_in"
+        android:progressTint="@color/white"
+        android:visibility="gone" />
 </RelativeLayout>

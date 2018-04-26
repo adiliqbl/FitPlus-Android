@@ -4,8 +4,8 @@
     xmlns:custom="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
     android:background="?android:colorBackground"
+    android:fillViewport="true"
     android:overScrollMode="ifContentScrolls"
     android:scrollbars="none">
 
@@ -105,7 +105,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/padding_medium"
-                android:hint="Calories burnt"
+                android:hint="0 calories burnt"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toRightOf="@id/calorie_icon"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -147,7 +147,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/padding_medium"
-                android:hint="Steps taken"
+                android:hint="0 steps taken"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toRightOf="@id/steps_icon"
                 app:layout_constraintTop_toTopOf="parent" />

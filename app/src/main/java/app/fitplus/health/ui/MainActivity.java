@@ -1,7 +1,6 @@
 package app.fitplus.health.ui;
 
 import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,6 +10,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -50,6 +50,7 @@ public class MainActivity extends RxAppCompatActivity implements BottomNavigatio
     public static boolean REFRESH_DATA = false;
     private boolean DASHBOARD_FRAGMENT = true;
     private int FETCHED = 0;
+    private boolean DATA_LOADED = false;
 
     private DashboardFragment dashboardFragment;
     private ExploreFragment exploreFragment;
@@ -60,7 +61,6 @@ public class MainActivity extends RxAppCompatActivity implements BottomNavigatio
     BottomNavigationView bottomNavigationView;
 
     private DataProvider dataProvider = new DataProvider();
-    private ProgressDialog dialog;
     private FragmentManager mFragmentManager;
 
     @SuppressLint("CheckResult")
@@ -81,7 +81,7 @@ public class MainActivity extends RxAppCompatActivity implements BottomNavigatio
         active = dashboardFragment;
 
         if (getIntent().getBooleanExtra("login", false)) {
-            dialog = ProgressDialog.show(this, "", "Loading data", true, false);
+            changeLoadingVisibility(View.VISIBLE);
             fetchData();
         } else loadData();
 
@@ -128,7 +128,7 @@ public class MainActivity extends RxAppCompatActivity implements BottomNavigatio
     protected void onResume() {
         super.onResume();
 
-        if (FETCHED != 4) loadData();
+        if (!DATA_LOADED) loadData();
     }
 
     private void addHideFragment(Fragment fragment) {
@@ -142,6 +142,7 @@ public class MainActivity extends RxAppCompatActivity implements BottomNavigatio
     }
 
     public void fetchData() {
+        FETCHED = 0;
         goalsReference().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -157,7 +158,7 @@ public class MainActivity extends RxAppCompatActivity implements BottomNavigatio
                 }
 
                 FETCHED++;
-                if (FETCHED == 3) dismissDialog();
+                if (FETCHED == 3) dismissLoading();
             }
 
             @Override
@@ -180,7 +181,7 @@ public class MainActivity extends RxAppCompatActivity implements BottomNavigatio
                 }
 
                 FETCHED++;
-                if (FETCHED == 3) dismissDialog();
+                if (FETCHED == 3) dismissLoading();
             }
 
             @Override
@@ -204,7 +205,7 @@ public class MainActivity extends RxAppCompatActivity implements BottomNavigatio
                 }
 
                 FETCHED++;
-                if (FETCHED == 3) dismissDialog();
+                if (FETCHED == 3) dismissLoading();
             }
 
             @Override
@@ -214,14 +215,17 @@ public class MainActivity extends RxAppCompatActivity implements BottomNavigatio
         });
     }
 
-    private void dismissDialog() {
-        if (dialog != null && dialog.isShowing()) {
-            dialog.dismiss();
-            dialog = null;
-        }
+    private void dismissLoading() {
+        Timber.d("Data fetched from server");
+        changeLoadingVisibility(View.GONE);
 
         if (dashboardFragment != null) dashboardFragment.onDataLoaded();
         if (personalFragment != null) personalFragment.onDataLoaded();
+    }
+
+    private void changeLoadingVisibility(final int VISIBILITY) {
+        findViewById(R.id.progress_background).setVisibility(VISIBILITY);
+        findViewById(R.id.progress).setVisibility(VISIBILITY);
     }
 
     @SuppressLint("CheckResult")
@@ -238,7 +242,7 @@ public class MainActivity extends RxAppCompatActivity implements BottomNavigatio
                     if (dashboardFragment != null) dashboardFragment.onDataLoaded();
                     if (personalFragment != null) personalFragment.onDataLoaded();
 
-                    FETCHED = 4;
+                    DATA_LOADED = true;
                 }, Timber::e);
     }
 
@@ -288,6 +292,7 @@ public class MainActivity extends RxAppCompatActivity implements BottomNavigatio
     }
 
     public void logout() {
+        changeLoadingVisibility(View.VISIBLE);
         Observable.fromCallable(() -> {
             AppDatabase.getInstance(this).userDao().deleteAllUsers();
             AppDatabase.getInstance(this).statsDao().deleteAllStats();
@@ -297,11 +302,8 @@ public class MainActivity extends RxAppCompatActivity implements BottomNavigatio
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(bindToLifecycle())
-                .doOnSubscribe(disposable -> {
-                    dialog = ProgressDialog.show(this, "", "Signing out");
-                })
                 .doOnComplete(() -> {
-                    dialog.dismiss();
+                    changeLoadingVisibility(View.GONE);
                     Application.getInstance().Logout(this);
                 })
                 .subscribe();
