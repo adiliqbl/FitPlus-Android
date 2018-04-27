@@ -2,6 +2,7 @@ package app.fitplus.health.ui.tracking;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.ComponentCallbacks2;
 import android.content.ComponentName;
 import android.content.Context;
@@ -42,6 +43,9 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
 import org.greenrobot.eventbus.EventBus;
@@ -52,7 +56,6 @@ import java.util.Calendar;
 import app.fitplus.health.R;
 import app.fitplus.health.data.AppDatabase;
 import app.fitplus.health.data.DataProvider;
-import app.fitplus.health.data.FirebaseStorage;
 import app.fitplus.health.data.model.Stats;
 import app.fitplus.health.system.ClearMemory;
 import app.fitplus.health.system.component.CustomToast;
@@ -69,6 +72,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
+import static app.fitplus.health.data.FirebaseStorage.statsReference;
 import static app.fitplus.health.system.Application.getUser;
 import static app.fitplus.health.util.Constants.SERVICE.PEDOMETER_START;
 
@@ -583,16 +587,48 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
     }
 
     private void saveSession() {
-        Observable.fromCallable(() -> {
-            FirebaseStorage.statsReference().setValue(stats);
-            AppDatabase.getInstance(this).statsDao().insert(stats);
+        // If user is from Invitation without logging in
+        if (getUser() == null) return;
 
-            MainActivity.REFRESH_DATA = true;
-            return true;
-        })
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(s -> finish(), Timber::e);
+        final ProgressDialog progressDialog = ProgressDialog.show(this, "", getString(R.string.msg_saving_progress), true);
+
+        statsReference().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Stats saved = dataSnapshot.getValue(Stats.class);
+                if (saved != null) {
+                    stats.setDistance(stats.getDistance() + saved.getDistance());
+                    stats.setSteps(stats.getSteps() + saved.getSteps());
+                    stats.setCalorieBurned(stats.getCalorieBurned() + saved.getCalorieBurned());
+                }
+
+                // Saving online
+                statsReference().setValue(stats);
+
+                // Saving offline
+                Observable.fromCallable(() -> {
+                    AppDatabase.getInstance(TrackingActivity.this).statsDao().insert(stats);
+                    MainActivity.REFRESH_DATA = true;
+                    return true;
+                })
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(s -> {
+                            if (progressDialog != null && progressDialog.isShowing())
+                                progressDialog.dismiss();
+                            finish();
+                        }, Timber::e);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                new CustomToast(TrackingActivity.this, TrackingActivity.this, getString(R.string.error_progress_save_unsuccess))
+                        .show();
+
+                if (progressDialog != null && progressDialog.isShowing())
+                    progressDialog.dismiss();
+            }
+        });
     }
 
     void startPedometerService() {

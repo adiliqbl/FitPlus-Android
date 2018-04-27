@@ -30,12 +30,14 @@
     <string name="msg_profile_update">Updating profile</string>
     <string name="msg_pref_success">Preferences updated successfully</string>
     <string name="msg_profile_update_success">Profile updated successfully</string>
+    <string name="msg_saving_progress">Saving progress</string>
 
     <!--Errors-->
     <string name="error_no_internet">No internet connection</string>
     <string name="error_unknown">Unknown error occurred</string>
     <string name="error_time_out">Connection timed out</string>
     <string name="error_failed_update">Failed to update profile</string>
+    <string name="error_progress_save_unsuccess">Couldn\'t save your activity data</string>
 
     <!-- Placeholders -->
     <string name="placeholder_session_length">minutes session length</string>
