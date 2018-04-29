@@ -312,4 +312,10 @@ public class MainActivity extends RxAppCompatActivity implements BottomNavigatio
     public void openPersonalFragment() {
         bottomNavigationView.setSelectedItemId(R.id.navigation_personal);
     }
+
+    public void updateProgress() {
+        if (dashboardFragment != null) {
+            dashboardFragment.onDataLoaded();
+        }
+    }
 }

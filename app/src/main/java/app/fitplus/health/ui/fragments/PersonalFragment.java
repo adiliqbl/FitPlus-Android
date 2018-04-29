@@ -212,6 +212,9 @@ public class PersonalFragment extends Fragment implements ClearMemory {
 
         dataProvider.updateGoals(add, getActivity());
         getView().findViewById(R.id.save_goals).setVisibility(View.GONE);
+
+        // Updating progress in dashboard fragment
+        ((MainActivity) getActivity()).updateProgress();
     }
 
     @OnEditorAction(R.id.weight)
