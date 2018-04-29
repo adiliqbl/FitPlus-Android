@@ -53,10 +53,16 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <meta-data android:name="android.app.shortcuts"
+            <meta-data
+                android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity>
         <activity android:name=".ui.user.CompleteRegistration" />
+
+        <provider
+            android:name="com.facebook.FacebookContentProvider"
+            android:authorities="com.facebook.app.FacebookContentProvider{201548860628195}"
+            android:exported="true" />
 
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"

@@ -20,10 +20,12 @@ import com.google.android.gms.ads.InterstitialAd;
 
 import app.fitplus.health.R;
 import app.fitplus.health.data.DataProvider;
+import app.fitplus.health.data.model.Goals;
 import app.fitplus.health.data.model.Stats;
 import app.fitplus.health.system.ClearMemory;
 import app.fitplus.health.ui.MainActivity;
 import app.fitplus.health.ui.tracking.TrackingActivity;
+import app.fitplus.health.util.Util;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -39,6 +41,8 @@ public class DashboardFragment extends Fragment implements ClearMemory {
     TextView calorieText;
     @BindView(R.id.steps_text)
     TextView stepsText;
+    @BindView(R.id.distance_text)
+    TextView distanceCovered;
 
     @BindView(R.id.adView)
     AdView mAdView;
@@ -173,17 +177,52 @@ public class DashboardFragment extends Fragment implements ClearMemory {
     }
 
     private void fillViews() {
-        // TODO : Update circular progress here also
-
-        progress.setProgress(40);
-
         Stats stats = dataProvider.getStats();
         if (stats != null) {
             calorieText.setText(String.format("%s calories burned", String.valueOf(Math.round(stats.getCalorieBurned()))));
             stepsText.setText(String.format("%s steps taken", String.valueOf(Math.round(stats.getSteps()))));
+            distanceCovered.setText(String.format("%s km covered", Util.to1Decimal(stats.getDistance())));
+
+            Goals goal = dataProvider.getGoals();
+            if (goal == null) {
+                progress.setProgress(0);
+                return;
+            }
+
+            float totalProgress = 0, tmp;
+
+            // Getting goal percentage
+            int gls = 0;
+            if (goal.getSteps() > 0) gls++;
+            if (goal.getCalorie() > 0) gls++;
+            if (goal.getDistance() > 0) gls++;
+            float goalPercentage = 100f / (float) gls;
+
+            // Calculating total progress
+            if (goal.getSteps() > 0) {
+                tmp = ((stats.getSteps() / goal.getSteps()) * goalPercentage);
+                if (tmp > 33.33f) tmp = 33.33f;
+
+                totalProgress += tmp;
+            }
+            if (goal.getCalorie() > 0) {
+                tmp = ((stats.getCalorieBurned() / goal.getCalorie()) * goalPercentage);
+                if (tmp > 33.33f) tmp = 33.3f;
+
+                totalProgress += tmp;
+            }
+            if (goal.getDistance() > 0) {
+                tmp = ((stats.getDistance() / goal.getDistance()) * goalPercentage);
+                if (tmp > 33.33f) tmp = 33.33f;
+
+                totalProgress += tmp;
+            }
+
+            progress.setProgress(Math.round(totalProgress));
         } else {
             calorieText.setHint(R.string.msg_no_activity);
             stepsText.setHint(R.string.msg_no_activity);
+            distanceCovered.setHint(R.string.msg_no_activity);
         }
     }
 

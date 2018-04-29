@@ -8,6 +8,10 @@
     <string name="title_activity_maps">Tracking</string>
     <string name="fitplus_assistant">FitPlus Assistant</string>
 
+    <!--Facebook-->
+    <string name="facebook_app_id">201548860628195</string>
+    <string name="fb_login_protocol_scheme">fb201548860628195</string>
+
     <!--Invitation-->
     <string name="send_link">Invite friends</string>
     <string name="invitation_title">Track runs with FitPlus</string>

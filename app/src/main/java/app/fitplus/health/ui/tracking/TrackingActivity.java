@@ -59,6 +59,7 @@ import app.fitplus.health.data.DataProvider;
 import app.fitplus.health.data.model.Stats;
 import app.fitplus.health.system.ClearMemory;
 import app.fitplus.health.system.component.CustomToast;
+import app.fitplus.health.system.component.InternetDialog;
 import app.fitplus.health.system.events.NoSensorEvent;
 import app.fitplus.health.system.events.SessionEndEvent;
 import app.fitplus.health.system.pedometer.PedometerService;
@@ -73,6 +74,7 @@ import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 import static app.fitplus.health.data.FirebaseStorage.statsReference;
+import static app.fitplus.health.system.Application.CONNECTED;
 import static app.fitplus.health.system.Application.getUser;
 import static app.fitplus.health.util.Constants.SERVICE.PEDOMETER_START;
 
@@ -570,7 +572,9 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
 
     @SuppressLint("SetTextI18n")
     private void stop() {
-        ACTIVITY_STATUS = 0;
+        if (ACTIVITY_STATUS == 10) return;
+
+        ACTIVITY_STATUS = 10;
 
         saveSession();
         AppDatabase.setSession(this, false);
@@ -587,48 +591,76 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
     }
 
     private void saveSession() {
-        // If user is from Invitation without logging in
+        // If user is from Invitation Link without logging in
         if (getUser() == null) return;
 
         final ProgressDialog progressDialog = ProgressDialog.show(this, "", getString(R.string.msg_saving_progress), true);
 
-        statsReference().addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Stats saved = dataSnapshot.getValue(Stats.class);
-                if (saved != null) {
-                    stats.setDistance(stats.getDistance() + saved.getDistance());
-                    stats.setSteps(stats.getSteps() + saved.getSteps());
-                    stats.setCalorieBurned(stats.getCalorieBurned() + saved.getCalorieBurned());
+        if (CONNECTED) {
+            statsReference().addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Stats saved = dataSnapshot.getValue(Stats.class);
+                    if (saved != null) {
+                        stats.setDistance(stats.getDistance() + saved.getDistance());
+                        stats.setSteps(stats.getSteps() + saved.getSteps());
+                        stats.setCalorieBurned(stats.getCalorieBurned() + saved.getCalorieBurned());
+                    }
+
+                    saveStats(progressDialog);
                 }
 
-                // Saving online
-                statsReference().setValue(stats);
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    new CustomToast(TrackingActivity.this, TrackingActivity.this, getString(R.string.error_progress_save_unsuccess))
+                            .show();
 
-                // Saving offline
-                Observable.fromCallable(() -> {
-                    AppDatabase.getInstance(TrackingActivity.this).statsDao().insert(stats);
-                    MainActivity.REFRESH_DATA = true;
-                    return true;
-                })
-                        .subscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(s -> {
-                            if (progressDialog != null && progressDialog.isShowing())
-                                progressDialog.dismiss();
-                            finish();
-                        }, Timber::e);
-            }
+                    if (progressDialog != null && progressDialog.isShowing())
+                        progressDialog.dismiss();
+                }
+            });
+        } else {
+            // Check from offline storage
+            Observable.fromCallable(() -> AppDatabase.getInstance(TrackingActivity.this)
+                    .statsDao().getStatsById(getUser().getUid()))
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(s -> {
+                        if (progressDialog != null && progressDialog.isShowing())
+                            progressDialog.dismiss();
+                        if (s == null) new InternetDialog(this);
+                        else {
+                            stats.setDistance(stats.getDistance() + s.getDistance());
+                            stats.setSteps(stats.getSteps() + s.getSteps());
+                            stats.setCalorieBurned(stats.getCalorieBurned() + s.getCalorieBurned());
+                            saveStats(progressDialog);
+                        }
+                    }, Timber::e);
+        }
+    }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                new CustomToast(TrackingActivity.this, TrackingActivity.this, getString(R.string.error_progress_save_unsuccess))
-                        .show();
+    void saveStats(ProgressDialog progressDialog) {
+        if (stats == null) {
+            finish();
+            return;
+        }
 
-                if (progressDialog != null && progressDialog.isShowing())
-                    progressDialog.dismiss();
-            }
-        });
+        // Saving online
+        statsReference().setValue(stats);
+
+        // Saving offline
+        Observable.fromCallable(() -> {
+            AppDatabase.getInstance(TrackingActivity.this).statsDao().insert(stats);
+            MainActivity.REFRESH_DATA = true;
+            return true;
+        })
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(s -> {
+                    if (progressDialog != null && progressDialog.isShowing())
+                        progressDialog.dismiss();
+                    finish();
+                }, Timber::e);
     }
 
     void startPedometerService() {
@@ -690,6 +722,8 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
     }
 
     private void sessionEnd(final float steps) {
+        if (ACTIVITY_STATUS == 10) return;
+
         stats = new Stats();
         stats.setSteps(steps);
         stats.setCalorieBurned(getCaloriesBurnt(steps));
@@ -709,8 +743,8 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
     private void calculateAndFillViews(final float numSteps) {
         if (ACTIVITY_STATUS == 1) {
             steps.setText(String.format("%s steps", String.valueOf(Math.round(numSteps))));
-            distance.setText(String.format("%s km", String.valueOf(getDistanceRun(numSteps))));
-            calorie.setText(String.format("%s calories", String.valueOf(getCaloriesBurnt(numSteps))));
+            distance.setText(String.format("%s km", Util.to1Decimal(getDistanceRun(numSteps))));
+            calorie.setText(String.format("%s calories", String.valueOf(Math.round(getCaloriesBurnt(numSteps)))));
         }
     }
 
@@ -718,14 +752,14 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
      * Calculations
      */
     // Calculate distance from Steps
-    public int getDistanceRun(float steps) {
-        return Math.round((steps * 78) / (float) 100000);
+    public float getDistanceRun(float steps) {
+        return ((steps * 78) / (float) 100000);
     }
 
     // Calculate Calories from Steps
-    public int getCaloriesBurnt(float steps) {
+    public float getCaloriesBurnt(float steps) {
         float stepCount = (float) (1.6 / getDistanceRun(steps)) * steps;
-        return Math.round((float) (stepCount / (WEIGHT * 1.2565)));
+        return (float) (stepCount / (WEIGHT * 1.2565));
     }
 
     private void resetViews() {
