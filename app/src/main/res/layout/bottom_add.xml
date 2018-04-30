@@ -16,7 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/padding_normal"
-        android:text="Add Goal"
+        android:text="@string/add_goal"
         android:textColor="@color/textColorDefaultDark"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="@id/topBackground" />
@@ -35,7 +35,6 @@
         style="@style/Text.Small.Bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Calorie"
         android:textColor="@color/colorAccent"
         app:layout_constraintLeft_toLeftOf="@id/label"
         app:layout_constraintTop_toBottomOf="@id/add_goal" />
@@ -45,7 +44,7 @@
         style="@style/Text.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ADD"
+        android:text="@string/add"
         android:textColor="@color/colorAccent"
         app:layout_constraintBottom_toBottomOf="@id/label"
         app:layout_constraintRight_toRightOf="parent"
