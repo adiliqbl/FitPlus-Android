@@ -46,7 +46,7 @@ import static app.fitplus.health.data.FirebaseStorage.statsReference;
 import static app.fitplus.health.data.FirebaseStorage.usersReference;
 
 public class MainActivity extends RxAppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener,
-        ClearMemory {
+        ClearMemory, AssistantFragment.AssistantListener {
     public static boolean REFRESH_DATA = false;
     private boolean DASHBOARD_FRAGMENT = true;
     private int FETCHED = 0;
@@ -217,6 +217,7 @@ public class MainActivity extends RxAppCompatActivity implements BottomNavigatio
 
     private void dismissLoading() {
         Timber.d("Data fetched from server");
+        findViewById(R.id.progress).setVisibility(View.GONE);
         changeLoadingVisibility(View.GONE);
 
         if (dashboardFragment != null) dashboardFragment.onDataLoaded();
@@ -224,8 +225,8 @@ public class MainActivity extends RxAppCompatActivity implements BottomNavigatio
     }
 
     private void changeLoadingVisibility(final int VISIBILITY) {
-        findViewById(R.id.progress_background).setVisibility(VISIBILITY);
         findViewById(R.id.progress).setVisibility(VISIBILITY);
+        findViewById(R.id.progress_background).setVisibility(VISIBILITY);
     }
 
     @SuppressLint("CheckResult")
@@ -270,7 +271,7 @@ public class MainActivity extends RxAppCompatActivity implements BottomNavigatio
     }
 
     private void Assistant() {
-        AssistantFragment assistantFragment = AssistantFragment.newInstance(MainActivity.this);
+        AssistantFragment assistantFragment = AssistantFragment.newInstance(MainActivity.this, dataProvider, this);
         assistantFragment.show();
     }
 
@@ -294,9 +295,7 @@ public class MainActivity extends RxAppCompatActivity implements BottomNavigatio
     public void logout() {
         changeLoadingVisibility(View.VISIBLE);
         Observable.fromCallable(() -> {
-            AppDatabase.getInstance(this).userDao().deleteAllUsers();
-            AppDatabase.getInstance(this).statsDao().deleteAllStats();
-            AppDatabase.getInstance(this).goalsDao().deleteAllGoals();
+            AppDatabase.getInstance(this).clearAllTables();
             return true;
         })
                 .subscribeOn(Schedulers.newThread())
@@ -316,6 +315,19 @@ public class MainActivity extends RxAppCompatActivity implements BottomNavigatio
     public void updateProgress() {
         if (dashboardFragment != null) {
             dashboardFragment.onDataLoaded();
+        }
+    }
+
+    @Override
+    public void onAssistantClosed() {
+
+    }
+
+    @Override
+    public void onCommand(int COMMAND_TYPE) {
+        if (COMMAND_TYPE == 1) {
+            if (dashboardFragment != null)
+                dashboardFragment.beginActivity();
         }
     }
 }

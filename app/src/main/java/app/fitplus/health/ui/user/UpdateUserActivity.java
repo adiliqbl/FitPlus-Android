@@ -45,7 +45,7 @@ public class UpdateUserActivity extends RxAppCompatActivity {
         if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         name.setText(getUser().getDisplayName());
-        if (getUser().getProviderId().equals(PhoneAuthProvider.PROVIDER_ID)) {
+        if (PhoneAuthProvider.PROVIDER_ID.equals(getUser().getProviders().get(0))) {
             phone.setText(getUser().getPhoneNumber());
         } else {
             phone.setText(getUser().getEmail());

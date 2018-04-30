@@ -15,6 +15,7 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
@@ -121,11 +122,18 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
 
         resetViews();
 
-        if (getIntent() != null && (getIntent().hasExtra("dataProvider")
-                && getIntent().getSerializableExtra("dataProvider") != null)) {
-            dataProvider = (DataProvider) getIntent().getSerializableExtra("dataProvider");
-            getValues();
-        } else loadData();
+        if (savedInstanceState != null) {
+            ACTIVITY_STATUS = savedInstanceState.getInt("status");
+            PERFORM_ACTION_STATUS = savedInstanceState.getInt("perform_status");
+            stats = (Stats) savedInstanceState.getSerializable("stats");
+            dataProvider = (DataProvider) savedInstanceState.getSerializable("dataProvider");
+        } else {
+            if (getIntent() != null && (getIntent().hasExtra("dataProvider")
+                    && getIntent().getSerializableExtra("dataProvider") != null)) {
+                dataProvider = (DataProvider) getIntent().getSerializableExtra("dataProvider");
+                getValues();
+            } else loadData();
+        }
 
         Observable.fromCallable(() -> AppDatabase.getSession(this))
                 .subscribeOn(Schedulers.io())
@@ -137,6 +145,16 @@ public class TrackingActivity extends RxAppCompatActivity implements OnMapReadyC
                         startPedometerService();
                     }
                 });
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+
+        outState.putInt("status", ACTIVITY_STATUS);
+        outState.putInt("perform_status", PERFORM_ACTION_STATUS);
+        outState.putSerializable("stats", stats);
+        outState.putSerializable("dataProvider", dataProvider);
     }
 
     @SuppressLint("CheckResult")

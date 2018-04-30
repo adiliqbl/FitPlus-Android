@@ -32,10 +32,15 @@ android {
         javaMaxHeapSize "2g"
     }
     buildTypes {
+        debug {
+            resValue "string", "fb_provider_id", "com.facebook.app.FacebookContentProvider201548860628195"
+        }
         release {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            resValue "string", "fb_provider_id", "com.facebook.app.FacebookContentProvider201548860628195"
         }
     }
 }
@@ -74,9 +79,9 @@ dependencies {
     implementation 'com.trello.rxlifecycle2:rxlifecycle-components:2.1.0'
 
     // Data
-    implementation "android.arch.persistence.room:rxjava2:1.0.0"
-    implementation "android.arch.persistence.room:runtime:1.0.0"
-    annotationProcessor "android.arch.persistence.room:compiler:1.0.0"
+    implementation "android.arch.persistence.room:rxjava2:1.1.0-beta3"
+    implementation "android.arch.persistence.room:runtime:1.1.0-beta3"
+    annotationProcessor "android.arch.persistence.room:compiler:1.1.0-beta3"
 
     // UI
     implementation 'com.firebaseui:firebase-ui-auth:3.3.1'

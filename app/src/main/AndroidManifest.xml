@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="app.fitplus.health">
 
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
@@ -8,6 +9,8 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:name=".system.Application"
@@ -31,7 +34,6 @@
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".ui.tracking.TrackingActivity"
-            android:configChanges="orientation"
             android:label="@string/title_activity_maps"
             android:parentActivityName=".ui.MainActivity"
             android:theme="@style/MapTheme">
@@ -61,9 +63,13 @@
 
         <provider
             android:name="com.facebook.FacebookContentProvider"
-            android:authorities="com.facebook.app.FacebookContentProvider{201548860628195}"
+            android:authorities="@string/fb_provider_id"
             android:exported="true" />
 
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id"
+            tools:replace="android:value" />
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"
             android:value="false" />

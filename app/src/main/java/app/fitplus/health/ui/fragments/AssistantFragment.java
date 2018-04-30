@@ -24,7 +24,9 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 
 import app.fitplus.health.R;
+import app.fitplus.health.data.DataProvider;
 import app.fitplus.health.ui.MainActivity;
+import app.fitplus.health.util.Util;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
@@ -38,8 +40,14 @@ public class AssistantFragment extends BottomSheetDialog implements SpeechDelega
     private WeakReference<MainActivity> activity;
     private AssistantListener listener;
 
-    public static AssistantFragment newInstance(final MainActivity activity) {
-        return new AssistantFragment(activity, activity);
+    private DataProvider dataProvider;
+
+    public static AssistantFragment newInstance(final MainActivity activity, final DataProvider dataProvider,
+                                                final AssistantListener listener) {
+        AssistantFragment assistantFragment = new AssistantFragment(activity, activity);
+        assistantFragment.dataProvider = dataProvider;
+        assistantFragment.listener = listener;
+        return assistantFragment;
     }
 
     private AssistantFragment(@NonNull Context context, MainActivity activity) {
@@ -134,7 +142,24 @@ public class AssistantFragment extends BottomSheetDialog implements SpeechDelega
         if (result.isEmpty()) {
             Speech.getInstance().say("Could you please repeat?");
         } else {
-            Speech.getInstance().say(result);
+            if (result.contains("my") && result.contains("progress")) {
+                // Progress query
+                if (dataProvider.getStats() == null) {
+                    Speech.getInstance().say("You have no activity yet");
+                } else if (dataProvider.getGoals() == null) {
+                    Speech.getInstance().say("You have not set goals yet");
+                } else {
+                    Speech.getInstance().say("Your progress is " +
+                            String.valueOf(Math.round(Util.getTotalProgress(dataProvider.getStats(),
+                                    dataProvider.getGoals()))));
+                }
+            } else if (((result.contains("start") || result.contains("begin"))
+                    && (result.contains("activity") || result.contains("session")
+                    || result.contains("tracking")))) {
+                // Start activity
+                Speech.getInstance().say("Beginning session");
+                if (listener != null) listener.onCommand(1);
+            }
         }
     }
 
@@ -183,5 +208,7 @@ public class AssistantFragment extends BottomSheetDialog implements SpeechDelega
 
     public interface AssistantListener {
         void onAssistantClosed();
+
+        void onCommand(int COMMAND_TYPE);
     }
 }

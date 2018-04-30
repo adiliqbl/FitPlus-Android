@@ -2,6 +2,7 @@ package app.fitplus.health.ui.fragments;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,12 +12,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.facebook.share.model.SharePhoto;
+import com.facebook.share.model.SharePhotoContent;
+import com.facebook.share.widget.ShareDialog;
 import com.github.lzyzsd.circleprogress.CircleProgress;
 import com.google.ads.mediation.admob.AdMobAdapter;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
+
+import org.jetbrains.annotations.NotNull;
 
 import app.fitplus.health.R;
 import app.fitplus.health.data.DataProvider;
@@ -172,6 +178,29 @@ public class DashboardFragment extends Fragment implements ClearMemory {
         if (isAdded()) ((MainActivity) getActivity()).openPersonalFragment();
     }
 
+    @OnClick(R.id.facebook_share)
+    public void shareOnFacebook() {
+        SharePhoto photo = new SharePhoto.Builder()
+                .setBitmap(getScreenShot(getView().getRootView()))
+                .build();
+        SharePhotoContent content = new SharePhotoContent.Builder()
+                .addPhoto(photo)
+                .build();
+
+        ShareDialog shareDialog = new ShareDialog(getActivity());
+        shareDialog.show(content, ShareDialog.Mode.AUTOMATIC);
+    }
+
+    public Bitmap getScreenShot(@NotNull View view) {
+        view.findViewById(R.id.facebook_share).setVisibility(View.GONE);
+        View screenView = view.getRootView();
+        screenView.setDrawingCacheEnabled(true);
+        Bitmap bitmap = Bitmap.createBitmap(screenView.getDrawingCache());
+        screenView.setDrawingCacheEnabled(false);
+        view.findViewById(R.id.facebook_share).setVisibility(View.VISIBLE);
+        return bitmap;
+    }
+
     public void onDataLoaded() {
         if (isAdded()) fillViews();
     }
@@ -189,36 +218,7 @@ public class DashboardFragment extends Fragment implements ClearMemory {
                 return;
             }
 
-            float totalProgress = 0, tmp;
-
-            // Getting goal percentage
-            int gls = 0;
-            if (goal.getSteps() > 0) gls++;
-            if (goal.getCalorie() > 0) gls++;
-            if (goal.getDistance() > 0) gls++;
-            float goalPercentage = 100f / (float) gls;
-
-            // Calculating total progress
-            if (goal.getSteps() > 0) {
-                tmp = ((stats.getSteps() / goal.getSteps()) * goalPercentage);
-                if (tmp > 33.33f) tmp = 33.33f;
-
-                totalProgress += tmp;
-            }
-            if (goal.getCalorie() > 0) {
-                tmp = ((stats.getCalorieBurned() / goal.getCalorie()) * goalPercentage);
-                if (tmp > 33.33f) tmp = 33.3f;
-
-                totalProgress += tmp;
-            }
-            if (goal.getDistance() > 0) {
-                tmp = ((stats.getDistance() / goal.getDistance()) * goalPercentage);
-                if (tmp > 33.33f) tmp = 33.33f;
-
-                totalProgress += tmp;
-            }
-
-            progress.setProgress(Math.round(totalProgress));
+            progress.setProgress(Math.round(Util.getTotalProgress(stats, goal)));
         } else {
             calorieText.setHint(R.string.msg_no_activity);
             stepsText.setHint(R.string.msg_no_activity);

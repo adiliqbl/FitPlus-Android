@@ -80,9 +80,8 @@ public class PersonalFragment extends Fragment implements ClearMemory {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         name.setText(getUser().getDisplayName());
-        if (getUser().getProviderId().equals(PhoneAuthProvider.PROVIDER_ID)) {
+        if (PhoneAuthProvider.PROVIDER_ID.equals(getUser().getProviders().get(0))) {
             email.setText(getUser().getPhoneNumber());
         } else email.setText(getUser().getEmail());
         tempGoal = null;
